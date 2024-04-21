@@ -1,5 +1,7 @@
+import { ReactElement } from 'react'
+
 type QuestionPropsType = {
-  text: string
+  text: ReactElement
   containerStyle?: string
   avatarUrl?: string
   className?: string
@@ -16,7 +18,7 @@ export const QuestionWithAvatar = ({
   return (
     <div className={finalClassName}>
       <img src={avatarUrl} className='w-8 h-8 rounded-md' />
-      <p className='text-xs'>{text}</p>
+      {text}
     </div>
   )
 }

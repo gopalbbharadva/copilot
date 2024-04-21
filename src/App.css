@@ -4,6 +4,14 @@
   text-align: center;
 }
 
+.scrollbar-hidden {
+  scrollbar-width: none;
+}
+/* For WebKit browsers (like Chrome and Safari) */
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
 .my-element {
   opacity: 1;
   transition: opacity 0.5s ease-in-out; /* Adjust duration and timing function */

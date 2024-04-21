@@ -7,18 +7,34 @@ import Astuto from '../public/Astuto.png'
 import Avatar from '../public/Avatar.jpg'
 import { useEffect, useState } from 'react'
 import { useSqlQuery } from './hooks/useSqlQuery'
+import { Chart } from 'react-google-charts'
 import { SlArrowDown, SlArrowUp } from 'react-icons/sl'
+import { SlLike } from 'react-icons/sl'
+import { SlDislike } from 'react-icons/sl'
+import { PiMinus } from 'react-icons/pi'
+import { BsPlusLg } from 'react-icons/bs'
 
-const questions = [
-  'Top cloud costs by services in production account (#24542)',
-  'Which application cost are increasing the fastest?',
-  'How much money are we losing by not moving to graviton instances?',
-  'Which are the largest s3 buckets by size?',
-]
+import {
+  Answers,
+  costExpenseChartOptions,
+  costExpenseData,
+  questions,
+  tasks,
+} from './constants'
+import { Answer } from './components/static/Answer'
+
+export const options = {
+  pieHole: 0.8,
+  is3D: false,
+  pieSliceTextStyle: {
+    color: 'black',
+  },
+}
 
 function App() {
-  const [showFirstQuestion, setShowFirstQuestion] = useState(false)
+  const [showFirstQuestion, setShowFirstQuestion] = useState(true)
   const [showQuery, setShowQuery] = useState(true)
+  const [zoomLevel, setZoomLevel] = useState(1.2)
   const { fetchData, data, chart } = useSqlQuery()
 
   const toggleVisibility = () => {
@@ -34,9 +50,21 @@ function App() {
     toggleShowQuery()
   }, [chart])
 
+  const handleZoomIn = () => {
+    setZoomLevel((prevZoomLevel) =>
+      prevZoomLevel < 1.728 ? +(prevZoomLevel * 1.2).toFixed(3) : prevZoomLevel
+    )
+  }
+
+  const handleZoomOut = () => {
+    setZoomLevel((prevZoomLevel) =>
+      prevZoomLevel > 0.833 ? +(prevZoomLevel / 1.2).toFixed(3) : prevZoomLevel
+    )
+  }
+
   return (
     <>
-      <div className='border h-screen border-black flex justify-center items-start bg-slate-100'>
+      <div className='border h-screen border-black flex overflow-y-auto justify-center items-start bg-slate-100'>
         {/* <div className='w-full self-end'> */}
         {!showFirstQuestion && (
           <div className='grid grid-cols-2 gap-4 mb-24 px-12 self-end w-full'>
@@ -50,13 +78,14 @@ function App() {
           </div>
         )}
         {showFirstQuestion && (
-          <div className='w-full px-4 flex justify-start items-start flex-col gap-2'>
+          <div className='w-full px-4 flex justify-start items-start flex-col gap-2 '>
             <QuestionWithAvatar
               avatarUrl={Avatar}
               containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
-              text='Top cloud costs by services in production account(#24542)'
+              text={
+                <p>Top cloud costs by services in production account(#24542)</p>
+              }
             />
-
             {!data && (
               <QuestionWithAvatar
                 className={`
@@ -64,7 +93,7 @@ function App() {
                 transition delay-500 duration-700`}
                 avatarUrl={Astuto}
                 containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
-                text='Generating SQL Query...'
+                text={<p>Generating SQL Query...</p>}
               />
             )}
             {data && (
@@ -82,7 +111,7 @@ function App() {
                 {showQuery && (
                   <div
                     className={`w-full flex justify-start items-start bg-gray-700 text-white rounded-lg p-4 
-                    transition delay-1000 duration-1000 ${
+                    transition delay-1000 duration-1000  ${
                       showQuery ? 'opacity-100' : 'opacity-0'
                     }`}
                   >
@@ -107,30 +136,125 @@ function App() {
                 transition delay-500 duration-700`}
                 avatarUrl={Astuto}
                 containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
-                text='Compiling data...'
+                text={<p>Compiling data...</p>}
               />
             )}
-            {/* change it with the chart */}
-            <p
-              className={`${
-                chart.length === 0 ? 'opacity-0' : 'opacity-100'
-              } transition delay-500 duration-700`}
-            >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              aliquam unde modi reiciendis magnam, quidem cumque sapiente
-              repellat porro? Ab veniam culpa, assumenda sint nemo dolor
-              molestiae aperiam provident accusamus quas ipsum, necessitatibus,
-              eveniet magnam quo sunt blanditiis incidunt ducimus aut nisi totam
-              dolorum beatae delectus tenetur, unde dolor aut maxime a
-              asperiores suscipit doloremque modi obcaecati fugiat sapiente, nam
-              dolores odit ducimus molestiae error reiciendis temporibus
-              dolorem.
-            </p>
+            <QuestionWithAvatar
+              className={`
+                ${chart.length === 0 ? 'opacity-0' : 'opacity-100'} 
+                transition delay-500 duration-700`}
+              avatarUrl={Astuto}
+              containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+              text={
+                <p>
+                  You production account (#24542) has accumulated costs of
+                  $100,000 over the past month, here is spread of cloud costs of
+                  services;
+                </p>
+              }
+            />
+            <Chart
+              chartType='PieChart'
+              width='100%'
+              height='400px'
+              data={tasks}
+              options={options}
+            />
+            {/* SECOND Question */}
+            <QuestionWithAvatar
+              avatarUrl={Avatar}
+              containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
+              text={<p>How can I reduce my EC2 costs?</p>}
+            />
+            <QuestionWithAvatar
+              avatarUrl={Astuto}
+              containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm'
+              text={
+                <div className='flex flex-col justify-start items-start gap-2'>
+                  <p>
+                    You can save $2500 per month overall in EC2 costs.{' '}
+                    <a className='text-green-500 underline' href='/'>
+                      Click here
+                    </a>{' '}
+                    to access a detailed report.
+                  </p>
+                  <p>Here are your top 2 savings area:</p>
+                </div>
+              }
+            />
+            <div className='flex justify-center items-center flex-col gap-4'>
+              {Answers.map((answer) => (
+                <Answer
+                  firstLine={answer.firsLine}
+                  secondLine={answer.secondLine}
+                />
+              ))}
+            </div>
+            {/* feedback  */}
+            <div className='m-auto flex justify-center items-center gap-4 '>
+              <p className='text-gray-500 font-ight'>
+                Have the answers been satisfactory so far?
+              </p>
+              <SlLike className='hover:text-red-500 cursor-pointer' />
+              <SlDislike className='hover:text-red-50- cursor-pointer' />
+            </div>
+            {/* THIRD Question */}
+            <QuestionWithAvatar
+              avatarUrl={Avatar}
+              containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
+              text={<p>Why are EC2 costs increasing so much?</p>}
+            />
+            {/* {chart.length === 0 ? 'opacity-0' : 'opacity-100'} */}
+            <QuestionWithAvatar
+              className={`
+                transition delay-500 duration-700`}
+              avatarUrl={Astuto}
+              containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+              text={
+                <p>
+                  You production account (#24542) has accumulated costs of
+                  $100,000 over the past month, here is spread of cloud costs of
+                  services;
+                </p>
+              }
+            />
+            <div className='h-full w-full overflow-auto relative border border-gray-400 rounded-xl scrollbar-hidden'>
+              <div
+                style={{
+                  transform: `scale(${zoomLevel})`,
+                  transformOrigin: 'top left',
+                }}
+              >
+                <Chart
+                  chartType='Sankey'
+                  width='100%'
+                  height='500px'
+                  data={costExpenseData}
+                  options={costExpenseChartOptions}
+                />
+              </div>
+              <div className='absolute bottom-0 right-20'>
+                <button
+                  disabled={zoomLevel === 1.728}
+                  className='text-3xl border border-gray-300 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
+                  onClick={handleZoomIn}
+                >
+                  <BsPlusLg />
+                </button>
+                <button
+                  disabled={zoomLevel === 0.833}
+                  className='text-3xl border border-gray-300 ml-2 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
+                  onClick={handleZoomOut}
+                >
+                  <PiMinus />
+                </button>
+              </div>
+            </div>
           </div>
         )}
         <div
-          className='flex fixed bottom-10 left-44 justify-between p-3 border shadow-lg
-          w-[74rem] text-gray-400 border-gray-500 rounded-xl text-sm mt-6 '
+          className='flex absolute bottom-10 justify-between p-3 border shadow-lg
+          w-[74rem] max-w-full text-gray-400 border-gray-500 rounded-xl text-sm mt-6 bg-white'
         >
           Start typing your query here...
           <div className='flex justify-center items-center gap-4'>
