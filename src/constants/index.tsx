@@ -30,11 +30,28 @@ export const Answers = [
   },
 ]
 
-export const questions = [
-  'Top cloud costs by services in production account (#24542)',
-  'Which application cost are increasing the fastest?',
-  'How much money are we losing by not moving to graviton instances?',
-  'Which are the largest s3 buckets by size?',
+export const questionsList = [
+  {
+    id: 1,
+    question: 'Top cloud costs by services in production account (#24542)',
+    isCurrent: true,
+  },
+  {
+    id: 2,
+    question: 'Which application cost are increasing the fastest?',
+    isCurrent: false,
+  },
+  {
+    id: 3,
+    question:
+      'How much money are we losing by not moving to graviton instances?',
+    isCurrent: false,
+  },
+  {
+    id: 4,
+    question: 'Which are the largest s3 buckets by size?',
+    isCurrent: false,
+  },
 ]
 
 export const tasks = [

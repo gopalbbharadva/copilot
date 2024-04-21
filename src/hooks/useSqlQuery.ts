@@ -4,6 +4,7 @@ export const useSqlQuery = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState('')
   const [chart, setChart] = useState('')
+  const [nextQuestion, setNextQuestion] = useState('')
 
   const fetchData = () => {
     setIsLoading(true)
@@ -16,7 +17,17 @@ export const useSqlQuery = () => {
           setData(result)
           return 'green signal for chart'
         })
-        .then((chartData) => setTimeout(() => setChart(chartData), 2000))
+        .then((chartData) => {
+          const timer = setTimeout(() => {
+            setChart(chartData)
+          }, 2000)
+          return timer
+        })
+        .then((nextQuestion) =>
+          setTimeout(() => {
+            setNextQuestion(nextQuestion ? 'green' : '')
+          }, 3000)
+        )
 
       setIsLoading(false)
     } catch (error) {
@@ -24,5 +35,5 @@ export const useSqlQuery = () => {
       setIsLoading(false)
     }
   }
-  return { isLoading, data, fetchData, chart }
+  return { isLoading, data, fetchData, chart, nextQuestion }
 }
