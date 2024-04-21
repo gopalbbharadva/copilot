@@ -1,17 +1,22 @@
 type QuestionPropsType = {
   text: string
+  containerStyle?: string
+  avatarUrl?: string
+  className?: string
 }
 
-export const Question = ({ text }: QuestionPropsType) => {
+export const QuestionWithAvatar = ({
+  text,
+  containerStyle,
+  avatarUrl,
+  className,
+}: QuestionPropsType) => {
+  const finalClassName = `w-full flex justify-start items-center gap-4 
+  bg-slate-200 p-4 rounded-br-lg rounded-bl-lg ${containerStyle} ${className}`
   return (
-    <div>
-      <img />
-      <p
-        className='font-normal text-start px-4 hover:cursor-pointer hover:bg-slate-200 
-            py-2 border border-gray-500 rounded-xl text-sm'
-      >
-        {text}
-      </p>
+    <div className={finalClassName}>
+      <img src={avatarUrl} className='w-8 h-8 rounded-md' />
+      <p className='text-xs'>{text}</p>
     </div>
   )
 }
