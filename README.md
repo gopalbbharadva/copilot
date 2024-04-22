@@ -1,30 +1,35 @@
-# React + TypeScript + Vite
+# Copilot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Overview 
+Copilot is basically a chat-gpt like UI project where you cann select the question and you will get the static result. It has 3 questions with it's answers.
 
-Currently, two official plugins are available:
+### Setup the project locally by following below steps.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
+- Clone the copilot repo using below command.
 
 ```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+git clone https://github.com/gopalbbharadva/copilot.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- After cloning the repo, navigate to the repo
+```js
+cd copilot
+```
+
+- Then install node modules by following command
+```js
+npm install
+```
+
+- After the successfully installation of node modules, run the project locally.
+```js
+npm run dev
+```
+
+- After running above command you will see one link like this.
+
+![Screenshot from 2024-04-22 23-15-04](https://github.com/gopalbbharadva/copilot/assets/75557011/12925fdf-c060-4607-acc1-ff88486bb642)
+
+- Just open the link in your browser and you can see the first page of the copilot.
