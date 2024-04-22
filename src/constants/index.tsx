@@ -54,23 +54,32 @@ export const questionsList = [
   },
 ]
 
+export const options = {
+  pieHole: 0.8,
+  is3D: false,
+  pieSliceTextStyle: {
+    color: 'black',
+  },
+}
+
 export const tasks = [
   ['Task', 'Hours per Day'],
-  ['Work', 11],
-  ['Eat', 2],
-  ['Commute', 2],
-  ['Watch TV', 2],
-  ['Sleep', 7],
+  ['Others ($10,000)', 1],
+  ['Elasticache ($10,000)', 1],
+  ['Opensearch ($10,000)', 1],
+  ['S3 ($20,000)', 2],
+  ['RDS ($20,000)', 2],
+  ['EC2 ($30,000)', 3],
 ]
 
 export const costExpenseData = [
   ['From', 'To', 'Weight'],
   ['Excess Costs: 2,500', 'Production: 2,000', 22],
-  // ['Excess Costs: 2,500', 'Staging: 300', 4],
-  // ['Excess Costs: 2,500', 'Analytics: 200', 2],
+  ['Excess Costs: 2,500', 'Staging: 300', 4],
+  ['Excess Costs: 2,500', 'Analytics: 200', 2],
 
-  // ['Staging: 300', '', 4],
-  // ['Analytics: 200', '',2],
+  ['Staging: 300', '', 4],
+  ['Analytics: 200', '',2],
 
   ['Production: 2,000', 'Purpose: 800', 9],
   ['Production: 2,000', 'Customers: 600', 8],
@@ -89,12 +98,8 @@ export const costExpenseData = [
 ]
 
 export const costExpenseChartOptions = {
-  // explorer: {
-  //   actions: ['dragToZoom', 'rightClickToReset'],
-  //   axis: 'horizontal',
-  //   keepInBounds: true,
-  //   maxZoomIn: 4.0,
-  // },
   width: 900,
-  sankey: { node: { nodePadding: 20 } },
+  sankey: {
+    node: { nodePadding: 20 },
+  },
 }
