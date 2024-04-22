@@ -8,7 +8,7 @@ import Avatar from '../public/Avatar.jpg'
 import { useEffect, useRef, useState } from 'react'
 import { useSqlQuery } from './hooks/useSqlQuery'
 import { Chart } from 'react-google-charts'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { SlArrowDown, SlArrowUp } from 'react-icons/sl'
 import { SlLike } from 'react-icons/sl'
 import { SlDislike } from 'react-icons/sl'
@@ -16,19 +16,23 @@ import { PiMinus } from 'react-icons/pi'
 import { BsPlusLg } from 'react-icons/bs'
 
 import {
-  Answers,
-  costExpenseChartOptions,
-  costExpenseData,
-  options,
-  questionsList,
-  tasks,
+  ANSWERS,
+  COSTS_EXPENSE_CHART_OPTIONS,
+  COST_EXPENSE_DATA,
+  OPTIONS,
+  QUESTIONS_LIST,
+  DATA_STORES,
 } from './constants'
 import { Answer } from './components/static/Answer'
 import { useSecondQuestion } from './hooks/useSecondQuestion'
 import { useThirdQuestion } from './hooks/useThirdQuestion'
+import { handleZoomIn, handleZoomOut, toggleVisibility } from './utils'
+import { MotionWrapper } from './components/MotionWrapper'
+import { CodeSnippet } from './components/static/CodeSnippet'
+import { SubHeader } from './components/SubHeader'
 
 function App() {
-  const [questions, setQuestions] = useState(questionsList)
+  const [questions, setQuestions] = useState(QUESTIONS_LIST)
   const [currentQuestionId, setShowCurrentQuestionId] = useState<number>(0)
   const [showQuery, setShowQuery] = useState(true)
   const [zoomLevel, setZoomLevel] = useState(1.2)
@@ -38,25 +42,6 @@ function App() {
 
   const { answer, feedback, fetchThirdQuestionData, sankeyChart } =
     useThirdQuestion()
-
-  const toggleVisibility = (id: number) => {
-    setShowCurrentQuestionId(id)
-    switch (id) {
-      case 1:
-        fetchData()
-        break
-      case 2:
-        fetchSecondQuestionData()
-        break
-      case 3:
-        fetchThirdQuestionData()
-        break
-      default:
-        break
-    }
-  }
-
-  console.log(answer, 'answer')
 
   const toggleShowQuery = () => {
     setShowQuery((prev) => !prev)
@@ -94,17 +79,18 @@ function App() {
     }
   }, [chart, description, data, currentQuestionId])
 
-  const handleZoomIn = () => {
-    setZoomLevel((prevZoomLevel) =>
-      prevZoomLevel < 1.728 ? +(prevZoomLevel * 1.2).toFixed(3) : prevZoomLevel
-    )
+  const currentButtonHandler = (isCurrent: boolean, id: number) => {
+    return isCurrent
+      ? toggleVisibility({
+          id,
+          fetchData,
+          fetchSecondQuestionData,
+          fetchThirdQuestionData,
+          setShowCurrentQuestionId,
+        })
+      : () => {}
   }
 
-  const handleZoomOut = () => {
-    setZoomLevel((prevZoomLevel) =>
-      prevZoomLevel > 0.833 ? +(prevZoomLevel / 1.2).toFixed(3) : prevZoomLevel
-    )
-  }
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (ref.current) {
@@ -133,7 +119,7 @@ function App() {
             {questions.map(({ id, isCurrent, question }) => (
               <Question
                 disabled={!isCurrent}
-                clickHandler={isCurrent ? () => toggleVisibility(id) : () => {}}
+                clickHandler={() => currentButtonHandler(isCurrent, id)}
                 key={id}
                 text={question}
               />
@@ -156,50 +142,22 @@ function App() {
             />
             <AnimatePresence>
               {isLoading && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    scale: 1,
-                  }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{
-                    opacity: 0,
-                    scale: 1,
-                  }}
-                  transition={{
-                    type: 'easeIn',
-                    stiffness: 400,
-                    damping: 40,
-                    delay: 0.5,
-                  }}
-                  className='w-full'
-                >
+                <MotionWrapper className='w-full'>
                   <QuestionWithAvatar
                     avatarUrl={Astuto}
                     containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
                     text={<p>Generating SQL Query...</p>}
                   />
-                </motion.div>
+                </MotionWrapper>
               )}
             </AnimatePresence>
             {/* SQL CODE SNIPPET */}
             {/* {data && ( */}
             <AnimatePresence>
               {!isLoading && (
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    scale: 1,
-                  }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{
-                    type: 'easeIn',
-                    stiffness: 400,
-                    damping: 40,
-                    delay: 0.5,
-                  }}
+                <MotionWrapper
                   className='w-full flex justify-center items-center flex-col'
-                  onClick={toggleShowQuery}
+                  clickHandler={toggleShowQuery}
                 >
                   <div className='flex justify-center items-center w-full'>
                     <span className='font-sm'>Query</span>
@@ -209,65 +167,23 @@ function App() {
                     </button>
                   </div>
 
-                  {showQuery && (
-                    <div
-                      className={`w-full flex justify-start items-start bg-gray-700 text-white rounded-lg p-4 
-                    `}
-                    >
-                      <iframe
-                        src='https://carbon.now.sh/embed?bg=rgba%2855%2C65%2C81%2C1%29&t=seti&wt=none&l=sql&width=680&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=true&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=SELECT%250A%2509service%252C%250A%2520%2520%2520%2520SUM%28cost%29%2520AS%2520total_cost%250AFROM%250A%2509cloud_costs%250AWHERE%250A%2509account_type%253D%27production%2520%28%252324542%29%27%250AGROUP%2520BY%250A%2509service%250AORDER%2520BY%250A%2509total_cost%2520DESC%253B'
-                        style={{
-                          width: '100%',
-                          height: '391px',
-                          border: 0,
-                          overflow: 'hidden',
-                        }}
-                        sandbox='allow-scripts allow-same-origin'
-                      ></iframe>
-                    </div>
-                  )}
-                </motion.div>
+                  {showQuery && <CodeSnippet />}
+                </MotionWrapper>
               )}
             </AnimatePresence>
             {/* )} */}
             {/* PIE CHART STARTS */}
             {!chart && data && (
-              <motion.div
-                className='w-full'
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-              >
+              <MotionWrapper className='w-full'>
                 <QuestionWithAvatar
                   avatarUrl={Astuto}
                   containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
                   text={<p>Compiling data...</p>}
                 />
-              </motion.div>
+              </MotionWrapper>
             )}
             {chart && (
-              <motion.div
-                className='w-full'
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-              >
+              <MotionWrapper className='w-full'>
                 <QuestionWithAvatar
                   avatarUrl={Astuto}
                   containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
@@ -279,115 +195,51 @@ function App() {
                     </p>
                   }
                 />
-              </motion.div>
+              </MotionWrapper>
             )}
             {chart.length !== 0 && (
-              <motion.div
-                className='w-full bg-white'
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-              >
-                <div className='flex justify-center items-center w-full p-2'>
-                  <span className='font-sm'>Chart</span>
-                  <div className='border border-gray-400 w-full mx-4'> </div>
-                  <button className='hover:cursor-pointer'>
-                    <SlArrowUp />
-                  </button>
-                </div>
+              <MotionWrapper className='w-full bg-white'>
+                <SubHeader text='Pie Chart' />
                 <Chart
                   chartType='PieChart'
                   width='100%'
                   height='400px'
-                  data={tasks}
-                  options={options}
+                  data={DATA_STORES}
+                  options={OPTIONS}
                 />
-              </motion.div>
+              </MotionWrapper>
             )}
             {/* PIE CHART ENDS */}
 
             {/* NEXT QUESTIONS STARTS*/}
             {nextQuestion.length !== 0 && currentQuestionId === 1 && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-                className='flex justify-center items-center w-full p-2 bg-white rounded-lg'
-              >
-                <span className='font-sm'>Chart</span>
-                <div className='border border-gray-400 w-full mx-4'> </div>
-                <button className='hover:cursor-pointer'>
-                  <SlArrowUp />
-                </button>
-              </motion.div>
+              <MotionWrapper className='flex justify-center items-center w-full p-2 bg-white rounded-lg'>
+                <SubHeader text='You might also want to know' />
+              </MotionWrapper>
             )}
             {nextQuestion.length !== 0 && currentQuestionId === 1 && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-                className='grid grid-cols-2 gap-4 px-12 self-end w-full bg-white p-6 rounded-lg'
-              >
+              <MotionWrapper className='grid grid-cols-2 gap-4 px-12 self-end w-full bg-white p-6 rounded-lg'>
                 {questions.map(({ id, isCurrent, question }) => (
                   <Question
                     disabled={!isCurrent}
-                    clickHandler={
-                      isCurrent ? () => toggleVisibility(id) : () => {}
-                    }
+                    clickHandler={() => currentButtonHandler(isCurrent, id)}
                     key={id}
                     text={question}
                   />
                 ))}
-              </motion.div>
+              </MotionWrapper>
             )}
             {/* NEXT QUESTIONS ENDS */}
 
             {/* feedback  */}
             {currentQuestionId === 1 && nextQuestion.length !== 0 && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-                className='m-auto flex justify-center items-center gap-4 '
-              >
-                <p className='text-gray-500 font-ight'>
+              <MotionWrapper className='m-auto flex justify-center items-center gap-4 '>
+                <p className='text-gray-500 font-light'>
                   Have the answers been satisfactory so far?
                 </p>
                 <SlLike className='hover:text-green-500 cursor-pointer' />
                 <SlDislike className='hover:text-red-500 cursor-pointer' />
-              </motion.div>
+              </MotionWrapper>
             )}
             {nextQuestion.length !== 0 && currentQuestionId === 1 && (
               <div className='h-28'></div>
@@ -418,20 +270,7 @@ function App() {
               />
             )}
             {briefData && currentQuestionId > 1 && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-                className='w-full'
-              >
+              <MotionWrapper className='w-full'>
                 <QuestionWithAvatar
                   avatarUrl={Astuto}
                   containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm'
@@ -448,104 +287,49 @@ function App() {
                     </div>
                   }
                 />
-              </motion.div>
+              </MotionWrapper>
             )}
 
             {description && currentQuestionId > 1 && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-                className={`flex justify-center items-center flex-col gap-4 transition delay-500 duration-700 bg-white p-2 rounded-md`}
-              >
-                <div className='flex justify-center items-center w-full'>
-                  <p className='text-xs text-center min-w-fit'>
-                    Top two saving areas
-                  </p>
-                  <div className='border border-gray-400 w-full mx-4'> </div>
-                  <button className='hover:cursor-pointer'>
-                    <SlArrowUp />
-                  </button>
-                </div>
-                {Answers.map((answer) => (
+              <MotionWrapper className='flex justify-center items-center flex-col gap-4 transition delay-500 duration-700 bg-white p-2 rounded-md'>
+                <SubHeader text='Top two saving areas' />
+                {ANSWERS.map((answer) => (
                   <Answer
                     firstLine={answer.firsLine}
                     secondLine={answer.secondLine}
                   />
                 ))}
-              </motion.div>
+              </MotionWrapper>
             )}
 
             {/* THIRD QUESTION */}
 
             {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
-              <div className='flex justify-center items-center w-full bg-white p-2 rounded-lg'>
-                <p className='text-xs text-center min-w-fit'>
-                  You might also want to know
-                </p>
-                <div className='border border-gray-400 w-full mx-4'> </div>
-                <button className='hover:cursor-pointer'>
-                  <SlArrowUp />
-                </button>
-              </div>
+              <MotionWrapper className='flex justify-center items-center w-full p-2 bg-white rounded-lg'>
+                <SubHeader text='You might also want to know' />
+              </MotionWrapper>
             )}
             {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-                className={`grid grid-cols-2 gap-4 px-12 self-end w-full transition delay-500 duration-700 bg-white p-6 rounded-lg`}
-              >
+              <MotionWrapper className='grid grid-cols-2 gap-4 px-12 self-end w-full transition delay-500 duration-700 bg-white p-6 rounded-lg'>
                 {questions.map(({ id, isCurrent, question }) => (
                   <Question
                     disabled={!isCurrent}
-                    clickHandler={
-                      isCurrent ? () => toggleVisibility(id) : () => {}
-                    }
+                    clickHandler={() => currentButtonHandler(isCurrent, id)}
                     key={id}
                     text={question}
                   />
                 ))}
-              </motion.div>
+              </MotionWrapper>
             )}
             {/* feedback  */}
             {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-                className={`m-auto flex justify-center items-center gap-4 transition delay-500 duration-700`}
-              >
+              <MotionWrapper className='m-auto flex justify-center items-center gap-4 transition delay-500 duration-700'>
                 <p className='text-gray-500 font-light'>
                   Have the answers been satisfactory so far?
                 </p>
                 <SlLike className='hover:text-green-500 cursor-pointer' />
                 <SlDislike className='hover:text-red-500 cursor-pointer' />
-              </motion.div>
+              </MotionWrapper>
             )}
             {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
               <div className='h-28'></div>
@@ -593,26 +377,9 @@ function App() {
               />
             )}
             {sankeyChart && (
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  scale: 1,
-                }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'easeIn',
-                  stiffness: 400,
-                  damping: 40,
-                  delay: 0.5,
-                }}
-                className='relative w-full'
-              >
-                <div className='flex justify-center items-center w-full bg-white p-2 rounded-lg'>
-                  <p className='text-xs text-center min-w-fit'>Dashboard</p>
-                  <div className='border border-gray-400 w-full mx-4'> </div>
-                  <button className='hover:cursor-pointer'>
-                    <SlArrowUp />
-                  </button>
+              <MotionWrapper className='relative w-full'>
+                <div className='rounded-lg bg-white'>
+                  <SubHeader text='Dashboard' />
                 </div>
                 <div
                   className={`transition delay-500 duration-700  
@@ -628,8 +395,8 @@ function App() {
                       chartType='Sankey'
                       width='100%'
                       height='500px'
-                      data={costExpenseData}
-                      options={costExpenseChartOptions}
+                      data={COST_EXPENSE_DATA}
+                      options={COSTS_EXPENSE_CHART_OPTIONS}
                     />
                   </div>
                 </div>
@@ -637,19 +404,19 @@ function App() {
                   <button
                     disabled={zoomLevel === 1.728}
                     className='text-3xl border border-gray-300 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
-                    onClick={handleZoomIn}
+                    onClick={() => handleZoomIn(setZoomLevel)}
                   >
                     <BsPlusLg />
                   </button>
                   <button
                     disabled={zoomLevel === 0.833}
                     className='text-3xl border border-gray-300 ml-2 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
-                    onClick={handleZoomOut}
+                    onClick={() => handleZoomOut(setZoomLevel)}
                   >
                     <PiMinus />
                   </button>
                 </div>
-              </motion.div>
+              </MotionWrapper>
             )}
             {feedback.length !== 0 && (
               <div className='m-auto flex justify-center items-center gap-4 '>
