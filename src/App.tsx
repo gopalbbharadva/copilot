@@ -121,7 +121,6 @@ function App() {
     answer,
     thirdQuestion,
   ])
-  console.log(currentQuestionId, 'id')
 
   return (
     <>
@@ -284,7 +283,7 @@ function App() {
             )}
             {chart.length !== 0 && (
               <motion.div
-                className='w-full'
+                className='w-full bg-white'
                 initial={{
                   opacity: 0,
                   scale: 1,
@@ -297,6 +296,13 @@ function App() {
                   delay: 0.5,
                 }}
               >
+                <div className='flex justify-center items-center w-full p-2'>
+                  <span className='font-sm'>Chart</span>
+                  <div className='border border-gray-400 w-full mx-4'> </div>
+                  <button className='hover:cursor-pointer'>
+                    <SlArrowUp />
+                  </button>
+                </div>
                 <Chart
                   chartType='PieChart'
                   width='100%'
@@ -309,6 +315,28 @@ function App() {
             {/* PIE CHART ENDS */}
 
             {/* NEXT QUESTIONS STARTS*/}
+            {nextQuestion.length !== 0 && currentQuestionId === 1 && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+                className='flex justify-center items-center w-full p-2 bg-white rounded-lg'
+              >
+                <span className='font-sm'>Chart</span>
+                <div className='border border-gray-400 w-full mx-4'> </div>
+                <button className='hover:cursor-pointer'>
+                  <SlArrowUp />
+                </button>
+              </motion.div>
+            )}
             {nextQuestion.length !== 0 && currentQuestionId === 1 && (
               <motion.div
                 initial={{
@@ -422,6 +450,7 @@ function App() {
                 />
               </motion.div>
             )}
+
             {description && currentQuestionId > 1 && (
               <motion.div
                 initial={{
@@ -435,8 +464,17 @@ function App() {
                   damping: 40,
                   delay: 0.5,
                 }}
-                className={`flex justify-center items-center flex-col gap-4 transition delay-500 duration-700 `}
+                className={`flex justify-center items-center flex-col gap-4 transition delay-500 duration-700 bg-white p-2 rounded-md`}
               >
+                <div className='flex justify-center items-center w-full'>
+                  <p className='text-xs text-center min-w-fit'>
+                    Top two saving areas
+                  </p>
+                  <div className='border border-gray-400 w-full mx-4'> </div>
+                  <button className='hover:cursor-pointer'>
+                    <SlArrowUp />
+                  </button>
+                </div>
                 {Answers.map((answer) => (
                   <Answer
                     firstLine={answer.firsLine}
@@ -447,6 +485,18 @@ function App() {
             )}
 
             {/* THIRD QUESTION */}
+
+            {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
+              <div className='flex justify-center items-center w-full bg-white p-2 rounded-lg'>
+                <p className='text-xs text-center min-w-fit'>
+                  You might also want to know
+                </p>
+                <div className='border border-gray-400 w-full mx-4'> </div>
+                <button className='hover:cursor-pointer'>
+                  <SlArrowUp />
+                </button>
+              </div>
+            )}
             {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
               <motion.div
                 initial={{
@@ -493,8 +543,8 @@ function App() {
                 <p className='text-gray-500 font-light'>
                   Have the answers been satisfactory so far?
                 </p>
-                <SlLike className='hover:text-red-500 cursor-pointer' />
-                <SlDislike className='hover:text-red-50- cursor-pointer' />
+                <SlLike className='hover:text-green-500 cursor-pointer' />
+                <SlDislike className='hover:text-red-500 cursor-pointer' />
               </motion.div>
             )}
             {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
@@ -523,7 +573,6 @@ function App() {
                 text={<p>Compiling data...</p>}
               />
             )}
-            {/* {chart.length === 0 ? 'opacity-0' : 'opacity-100'} */}
             {answer && currentQuestionId === 3 && (
               <QuestionWithAvatar
                 className={`${
@@ -558,9 +607,16 @@ function App() {
                 }}
                 className='relative w-full'
               >
+                <div className='flex justify-center items-center w-full bg-white p-2 rounded-lg'>
+                  <p className='text-xs text-center min-w-fit'>Dashboard</p>
+                  <div className='border border-gray-400 w-full mx-4'> </div>
+                  <button className='hover:cursor-pointer'>
+                    <SlArrowUp />
+                  </button>
+                </div>
                 <div
                   className={`transition delay-500 duration-700  
-                  h-full w-full overflow-auto border-2 border-gray-400 rounded-xl scrollbar-hidden`}
+                  h-fit w-full overflow-auto border-2 border-gray-400 rounded-xl scrollbar-hidden mt-4`}
                 >
                   <div
                     style={{
@@ -600,8 +656,8 @@ function App() {
                 <p className='text-gray-500 font-light'>
                   Have the answers been satisfactory so far?
                 </p>
-                <SlLike className='hover:text-red-500 cursor-pointer' />
-                <SlDislike className='hover:text-red-50- cursor-pointer' />
+                <SlLike className='hover:text-green-500 cursor-pointer' />
+                <SlDislike className='hover:text-red-500 cursor-pointer' />
               </div>
             )}
             {feedback.length !== 0 && <div className='h-28'></div>}

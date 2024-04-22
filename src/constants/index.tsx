@@ -75,11 +75,11 @@ export const tasks = [
 export const costExpenseData = [
   ['From', 'To', 'Weight'],
   ['Excess Costs: 2,500', 'Production: 2,000', 22],
-  // ['Excess Costs: 2,500', 'Staging: 300', 4],
-  // ['Excess Costs: 2,500', 'Analytics: 200', 2],
+  ['Excess Costs: 2,500', 'Staging: 300', 4],
+  ['Excess Costs: 2,500', 'Analytics: 200', 2],
 
-  // ['Staging: 300', '', 4],
-  // ['Analytics: 200', '',2],
+  ['Staging: 300', '', 4],
+  ['Analytics: 200', '',2],
 
   ['Production: 2,000', 'Purpose: 800', 9],
   ['Production: 2,000', 'Customers: 600', 8],
@@ -98,12 +98,8 @@ export const costExpenseData = [
 ]
 
 export const costExpenseChartOptions = {
-  // explorer: {
-  //   actions: ['dragToZoom', 'rightClickToReset'],
-  //   axis: 'horizontal',
-  //   keepInBounds: true,
-  //   maxZoomIn: 4.0,
-  // },
   width: 900,
-  sankey: { node: { nodePadding: 20 } },
+  sankey: {
+    node: { nodePadding: 20 },
+  },
 }
