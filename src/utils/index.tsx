@@ -1,4 +1,4 @@
-import { toggleVisibilityArgType } from '../types'
+import { QuestionType, toggleVisibilityArgType } from '../types'
 
 export const toggleVisibility = ({
   id,
@@ -59,4 +59,36 @@ export const toggleThirdAnswerCompile = (
   return gotThirdAnswerDescription(answer, currentQuestionId)
     ? 'opacity-100'
     : 'opacity-0'
+}
+
+export const changeSecondQuestion = (
+  setQuestions: React.Dispatch<React.SetStateAction<QuestionType[]>>
+) => {
+  setQuestions((prev) =>
+    prev.map((q) =>
+      q.id === 2
+        ? {
+            ...q,
+            isCurrent: true,
+            question: 'How can I reduce my EC2 costs?',
+          }
+        : { ...q, isCurrent: false }
+    )
+  )
+}
+
+export const changeThirdQuestion = (
+  setQuestions: React.Dispatch<React.SetStateAction<QuestionType[]>>
+) => {
+  setQuestions((prev) =>
+    prev.map((q) =>
+      q.id === 3
+        ? {
+            ...q,
+            isCurrent: true,
+            question: 'Why are EC2 costs increasing so much?',
+          }
+        : { ...q, isCurrent: false }
+    )
+  )
 }

@@ -9,6 +9,8 @@ import { QUESTIONS_LIST, START_TYPING } from './constants'
 import { useSecondQuestion } from './hooks/useSecondQuestion'
 import { useThirdQuestion } from './hooks/useThirdQuestion'
 import {
+  changeSecondQuestion,
+  changeThirdQuestion,
   handleZoomIn,
   handleZoomOut,
   toggleSecondAnswerRetrieve,
@@ -42,30 +44,10 @@ function App() {
       toggleShowQuery()
     }
     if (chart.length !== 0) {
-      setQuestions((prev) =>
-        prev.map((q) =>
-          q.id === 2
-            ? {
-                ...q,
-                isCurrent: true,
-                question: 'How can I reduce my EC2 costs?',
-              }
-            : { ...q, isCurrent: false }
-        )
-      )
+      changeSecondQuestion(setQuestions)
     }
     if (description.length !== 0) {
-      setQuestions((prev) =>
-        prev.map((q) =>
-          q.id === 3
-            ? {
-                ...q,
-                isCurrent: true,
-                question: 'Why are EC2 costs increasing so much?',
-              }
-            : { ...q, isCurrent: false }
-        )
-      )
+      changeThirdQuestion(setQuestions)
     }
   }, [chart, description, data, currentQuestionId])
 
@@ -101,7 +83,7 @@ function App() {
   return (
     <>
       <div
-        className={`border h-screen border-black flex overflow-y-auto justify-start items-center bg-slate-100 flex-col`}
+        className={` h-screen border-black flex overflow-y-auto justify-start items-center bg-slate-100 flex-col`}
       >
         {currentQuestionId === 0 && (
           <div className='grid grid-cols-2 gap-4 mb-24 px-12 mt-auto pb-6 w-full'>
@@ -132,7 +114,6 @@ function App() {
             />
 
             {/* SECOND Question */}
-
             <SecondQuestion
               briefData={briefData}
               currentButtonHandler={currentButtonHandler}
@@ -158,13 +139,13 @@ function App() {
           </div>
         )}
         <div
-          className='flex absolute bottom-10 justify-between p-3 border shadow-lg 
+          className='flex absolute bottom-10 justify-between p-4 shadow-lg 
           w-[74rem] max-w-full text-gray-400 border-gray-500 rounded-xl text-sm mt-6 bg-white'
         >
           {START_TYPING}
           <div className='flex justify-center items-center gap-4'>
-            <HiOutlineCodeBracket className='text-gray-400' />
-            <LuSendHorizonal className='text-gray-400' />
+            <HiOutlineCodeBracket size={20} className='text-gray-400' />
+            <LuSendHorizonal size={20} className='text-gray-400' />
           </div>
         </div>
         <div ref={ref}></div>
