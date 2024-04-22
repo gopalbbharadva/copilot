@@ -54,13 +54,22 @@ export const questionsList = [
   },
 ]
 
+export const options = {
+  pieHole: 0.8,
+  is3D: false,
+  pieSliceTextStyle: {
+    color: 'black',
+  },
+}
+
 export const tasks = [
   ['Task', 'Hours per Day'],
-  ['Work', 11],
-  ['Eat', 2],
-  ['Commute', 2],
-  ['Watch TV', 2],
-  ['Sleep', 7],
+  ['Others ($10,000)', 1],
+  ['Elasticache ($10,000)', 1],
+  ['Opensearch ($10,000)', 1],
+  ['S3 ($20,000)', 2],
+  ['RDS ($20,000)', 2],
+  ['EC2 ($30,000)', 3],
 ]
 
 export const costExpenseData = [
