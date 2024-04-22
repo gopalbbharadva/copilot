@@ -103,3 +103,39 @@ export const COSTS_EXPENSE_CHART_OPTIONS = {
     node: { nodePadding: 20 },
   },
 }
+
+export const FIRST_QUESTION =
+  'Top cloud costs by services in production account(#24542)'
+
+export const START_TYPING = 'Start typing your query here...'
+export const LOADING_SQL = 'Generating SQL Query...'
+export const COMPILE_LOAD = 'Compiling data...'
+export const RETRIEVING = 'Retrieving Data...'
+export const FIRST_QUESTION_ANSWER_DESCRIPTION = `
+You production account (#24542) has accumulated costs of
+$100,000 over the past month, here is spread of cloud
+costs of services;
+`
+export const FEEDBACK_LINE = 'Have the answers been satisfactory so far?'
+export const SECOND_QUESTION = 'How can I reduce my EC2 costs?'
+
+export const SECOND_QUESTION_DESCRIPTION = (
+  <>
+    <p>
+      You can save $2500 per month overall in EC2 costs.{' '}
+      <a className='text-green-500 underline' href='/'>
+        Click here
+      </a>{' '}
+      to access a detailed report.
+    </p>
+    <p>Here are your top 2 savings area:</p>{' '}
+  </>
+)
+
+export const THIRD_QUESTION = 'Why are EC2 costs increasing so much?'
+
+export const THIRD_QUESTION_DESCRIPTION = `
+  You production account (#24542) has accumulated costs of
+  $100,000 over the past month, here is spread of cloud costs
+  of services;
+`
