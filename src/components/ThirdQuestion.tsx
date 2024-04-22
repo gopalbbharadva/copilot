@@ -39,17 +39,18 @@ export const ThirdQuestion = ({
         <MotionWrapper>
           <Question
             avatarUrl={Astuto}
-            containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2'
+            containerStyle={`flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2 
+             ${isAnswerLoading ? 'pb-32' : 'pb-0'}
+             `}
             text={<p>{COMPILE_LOAD}</p>}
           />
         </MotionWrapper>
       )}
       {!isAnswerLoading && currentQuestionId === 3 && (
-        <MotionWrapper>
+        <MotionWrapper className={`${isAnswerLoading ? 'pb-32' : 'pb-0'}`}>
           <Question
             avatarUrl={Astuto}
-            containerStyle={`flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2 
-             ${isAnswerLoading ? 'pb-32' : 'pb-0'}`}
+            containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2'
             text={<p>{THIRD_QUESTION_DESCRIPTION}</p>}
           />
         </MotionWrapper>
