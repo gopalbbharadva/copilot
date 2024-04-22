@@ -38,3 +38,25 @@ export const handleZoomOut = (
     prevZoomLevel > 0.833 ? +(prevZoomLevel / 1.2).toFixed(3) : prevZoomLevel
   )
 }
+
+export const toggleSecondAnswerRetrieve = (
+  briefData: string,
+  currentQuestionId: number
+) => {
+  return !briefData && currentQuestionId > 1 ? 'opacity-100' : 'opacity-0'
+}
+
+export const gotThirdAnswerDescription = (
+  answer: string,
+  currentQuestionId: number
+) => {
+  return answer && currentQuestionId === 3
+}
+export const toggleThirdAnswerCompile = (
+  answer: string,
+  currentQuestionId: number
+) => {
+  return gotThirdAnswerDescription(answer, currentQuestionId)
+    ? 'opacity-100'
+    : 'opacity-0'
+}
