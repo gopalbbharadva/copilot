@@ -5,7 +5,7 @@ import { LuSendHorizonal } from 'react-icons/lu'
 import { QuestionWithAvatar } from './components/QuestionWithAvatar'
 import Astuto from '../public/Astuto.png'
 import Avatar from '../public/Avatar.jpg'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSqlQuery } from './hooks/useSqlQuery'
 import { Chart } from 'react-google-charts'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -39,13 +39,13 @@ function App() {
   const [currentQuestionId, setShowCurrentQuestionId] = useState<number>(0)
   const [showQuery, setShowQuery] = useState(true)
   const [zoomLevel, setZoomLevel] = useState(1.2)
+  const itemRef = useRef<HTMLDivElement>(null)
   const { isLoading, fetchData, data, chart, nextQuestion } = useSqlQuery()
   const { briefData, description, fetchSecondQuestionData, thirdQuestion } =
     useSecondQuestion()
 
   const { answer, feedback, fetchThirdQuestionData, sankeyChart } =
     useThirdQuestion()
-  console.log(briefData, 'briefData')
 
   const toggleVisibility = (id: number) => {
     setShowCurrentQuestionId(id)
@@ -113,6 +113,7 @@ function App() {
       prevZoomLevel > 0.833 ? +(prevZoomLevel / 1.2).toFixed(3) : prevZoomLevel
     )
   }
+  console.log(currentQuestionId, 'id')
 
   return (
     <>
@@ -261,7 +262,7 @@ function App() {
             </div>
             {/* PIE CHART ENDS */}
 
-            {/* NEXT QUESTIONS ENDS*/}
+            {/* NEXT QUESTIONS STARTS*/}
             {nextQuestion.length !== 0 && currentQuestionId === 1 && (
               <div className='grid grid-cols-2 gap-4 px-12 self-end w-full bg-white p-6 rounded-lg'>
                 {questions.map(({ id, isCurrent, question }) => (
@@ -276,8 +277,8 @@ function App() {
                 ))}
               </div>
             )}
-
             {/* NEXT QUESTIONS ENDS */}
+
             {/* feedback  */}
             {currentQuestionId === 1 && nextQuestion.length !== 0 && (
               <div className='m-auto flex justify-center items-center gap-4 '>
@@ -292,18 +293,18 @@ function App() {
             {/* 22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222 */}
 
             {/* SECOND Question */}
-            {currentQuestionId === 2 && (
+            {currentQuestionId > 1 && (
               <QuestionWithAvatar
                 avatarUrl={Avatar}
                 containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
                 text={<p>How can I reduce my EC2 costs?</p>}
               />
             )}
-            {!briefData && currentQuestionId === 2 && (
+            {!briefData && currentQuestionId > 1 && (
               <QuestionWithAvatar
                 className={`
                 ${
-                  !briefData && currentQuestionId === 2
+                  !briefData && currentQuestionId > 1
                     ? 'opacity-100'
                     : 'opacity-0'
                 } 
@@ -313,75 +314,88 @@ function App() {
                 text={<p>Retrieving Data...</p>}
               />
             )}
-            <QuestionWithAvatar
-              className={`
+            {currentQuestionId > 1 && (
+              <QuestionWithAvatar
+                className={`
                 ${
-                  briefData && currentQuestionId === 2
+                  briefData && currentQuestionId > 1
                     ? 'opacity-100'
                     : 'opacity-0'
                 } 
                 transition delay-500 duration-700`}
-              avatarUrl={Astuto}
-              containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm'
-              text={
-                <div className='flex flex-col justify-start items-start gap-2'>
-                  <p>
-                    You can save $2500 per month overall in EC2 costs.{' '}
-                    <a className='text-green-500 underline' href='/'>
-                      Click here
-                    </a>{' '}
-                    to access a detailed report.
-                  </p>
-                  <p>Here are your top 2 savings area:</p>
-                </div>
-              }
-            />
-            <div
-              className={`flex justify-center items-center flex-col gap-4 transition delay-500 duration-700  ${
-                description && currentQuestionId === 2
-                  ? 'opacity-100'
-                  : 'opacity-0'
-              } `}
-            >
-              {Answers.map((answer) => (
-                <Answer
-                  firstLine={answer.firsLine}
-                  secondLine={answer.secondLine}
-                />
-              ))}
-            </div>
-            <div
-              className={`grid grid-cols-2 gap-4 px-12 self-end w-full transition delay-500 duration-700 bg-white p-6 rounded-lg ${
-                thirdQuestion.length !== 0 ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              {questions.map(({ id, isCurrent, question }) => (
-                <Question
-                  disabled={!isCurrent}
-                  clickHandler={
-                    isCurrent ? () => toggleVisibility(id) : () => {}
-                  }
-                  key={id}
-                  text={question}
-                />
-              ))}
-            </div>
-            {/* feedback  */}
-            <div
-              className={`m-auto flex justify-center items-center gap-4 transition delay-500 duration-700 ${
-                thirdQuestion.length !== 0 ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <p className='text-gray-500 font-ight'>
-                Have the answers been satisfactory so far?
-              </p>
-              <SlLike className='hover:text-red-500 cursor-pointer' />
-              <SlDislike className='hover:text-red-50- cursor-pointer' />
-            </div>
+                avatarUrl={Astuto}
+                containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm'
+                text={
+                  <div className='flex flex-col justify-start items-start gap-2'>
+                    <p>
+                      You can save $2500 per month overall in EC2 costs.{' '}
+                      <a className='text-green-500 underline' href='/'>
+                        Click here
+                      </a>{' '}
+                      to access a detailed report.
+                    </p>
+                    <p>Here are your top 2 savings area:</p>
+                  </div>
+                }
+              />
+            )}
+            {currentQuestionId > 1 && (
+              <div
+                className={`flex justify-center items-center flex-col gap-4 transition delay-500 duration-700 ${
+                  description && currentQuestionId > 1
+                    ? 'opacity-100'
+                    : 'opacity-0'
+                } `}
+              >
+                {Answers.map((answer) => (
+                  <Answer
+                    firstLine={answer.firsLine}
+                    secondLine={answer.secondLine}
+                  />
+                ))}
+              </div>
+            )}
 
+            {/* THIRD QUESTION */}
+            {thirdQuestion.length !== 0 && currentQuestionId > 1 && (
+              <div
+                className={`grid grid-cols-2 gap-4 px-12 self-end w-full transition delay-500 duration-700 bg-white p-6 rounded-lg ${
+                  thirdQuestion.length !== 0 && currentQuestionId > 1
+                    ? 'opacity-100'
+                    : 'opacity-0'
+                }`}
+              >
+                {questions.map(({ id, isCurrent, question }) => (
+                  <Question
+                    disabled={!isCurrent}
+                    clickHandler={
+                      isCurrent ? () => toggleVisibility(id) : () => {}
+                    }
+                    key={id}
+                    text={question}
+                  />
+                ))}
+              </div>
+            )}
+            {/* feedback  */}
+            {thirdQuestion.length !== 0 && currentQuestionId > 1 && (
+              <div
+                className={`m-auto flex justify-center items-center gap-4 transition delay-500 duration-700 ${
+                  thirdQuestion.length !== 0 && currentQuestionId > 1
+                    ? 'opacity-100'
+                    : 'opacity-0'
+                }`}
+              >
+                <p className='text-gray-500 font-ight'>
+                  Have the answers been satisfactory so far?
+                </p>
+                <SlLike className='hover:text-red-500 cursor-pointer' />
+                <SlDislike className='hover:text-red-50- cursor-pointer' />
+              </div>
+            )}
             {/* THIRD Question */}
 
-            {currentQuestionId === 3 && (
+            {/* {currentQuestionId === 3 && (
               <QuestionWithAvatar
                 avatarUrl={Avatar}
                 containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
@@ -401,9 +415,9 @@ function App() {
                 containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
                 text={<p>Compiling data...</p>}
               />
-            )}
+            )} */}
             {/* {chart.length === 0 ? 'opacity-0' : 'opacity-100'} */}
-            <QuestionWithAvatar
+            {/* <QuestionWithAvatar
               className={`${
                 answer && currentQuestionId === 3 ? 'opacity-100' : 'opacity-0'
               }
@@ -417,8 +431,8 @@ function App() {
                   services;
                 </p>
               }
-            />
-            <div className='relative w-full'>
+            /> */}
+            {/* <div className='relative w-full'>
               <div
                 className={`transition delay-500 duration-700 ${
                   sankeyChart.length !== 0 ? 'opacity-100' : 'opacity-0'
@@ -456,8 +470,8 @@ function App() {
                   <PiMinus />
                 </button>
               </div>
-            </div>
-            {feedback.length !== 0 && (
+            </div> */}
+            {/* {feedback.length !== 0 && (
               <div className='m-auto flex justify-center items-center gap-4 '>
                 <p className='text-gray-500 font-ight'>
                   Have the answers been satisfactory so far?
@@ -465,10 +479,9 @@ function App() {
                 <SlLike className='hover:text-red-500 cursor-pointer' />
                 <SlDislike className='hover:text-red-50- cursor-pointer' />
               </div>
-            )}
+            )} */}
           </div>
         )}
-
         <div
           className='flex absolute bottom-10 justify-between p-3 border shadow-lg 
           w-[74rem] max-w-full text-gray-400 border-gray-500 rounded-xl text-sm mt-6 bg-white'
