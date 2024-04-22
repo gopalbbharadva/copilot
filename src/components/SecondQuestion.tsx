@@ -63,25 +63,17 @@ export const SecondQuestion = ({
       {description && currentQuestionId > 1 && (
         <MotionWrapper
           className='flex justify-center items-center flex-col gap-4 
-         bg-white p-2 rounded-md'
+         bg-white p-2 rounded-md rounded-br-none rounded-bl-none'
         >
           <SubHeader text='Top two saving areas' />
-          {ANSWERS.map((answer) => (
-            <Answer
-              firstLine={answer.firsLine}
-              secondLine={answer.secondLine}
-            />
+          {ANSWERS.map(({ id, firsLine, secondLine }) => (
+            <Answer key={id} firstLine={firsLine} secondLine={secondLine} />
           ))}
         </MotionWrapper>
       )}
 
-      {/* THIRD QUESTION */}
-
       {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
-        <MotionWrapper
-          className='flex justify-center items-center w-full p-2 bg-white 
-            rounded-lg rounded-br-none rounded-bl-none'
-        >
+        <MotionWrapper className='flex justify-center items-center w-full p-2 bg-white'>
           <SubHeader text='You might also want to know' />
         </MotionWrapper>
       )}
@@ -100,7 +92,7 @@ export const SecondQuestion = ({
           ))}
         </MotionWrapper>
       )}
-      {/* feedback  */}
+
       {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
         <MotionWrapper className='m-auto flex justify-center items-center gap-4 transition delay-500 duration-700 mt-2'>
           <p className='text-gray-500 font-light'>{FEEDBACK_LINE}</p>

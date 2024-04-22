@@ -14,7 +14,6 @@ import {
   handleZoomIn,
   handleZoomOut,
   toggleSecondAnswerRetrieve,
-  toggleThirdAnswerCompile,
   toggleVisibility,
 } from './utils'
 import {
@@ -36,8 +35,13 @@ function App() {
   const { briefData, description, fetchSecondQuestionData, thirdQuestion } =
     useSecondQuestion()
 
-  const { answer, feedback, fetchThirdQuestionData, sankeyChart } =
-    useThirdQuestion()
+  const {
+    isLoading: isThirdLoading,
+    answer,
+    feedback,
+    fetchThirdQuestionData,
+    sankeyChart,
+  } = useThirdQuestion()
 
   useEffect(() => {
     if (chart.length !== 0 && currentQuestionId == 1) {
@@ -126,14 +130,13 @@ function App() {
 
             {/* THIRD Question */}
             <ThirdQuestion
-              answer={answer}
+              isAnswerLoading={isThirdLoading}
               currentQuestionId={currentQuestionId}
               feedback={feedback}
               handleZoomIn={handleZoomIn}
               handleZoomOut={handleZoomOut}
               sankeyChart={sankeyChart}
               setZoomLevel={setZoomLevel}
-              toggleThirdAnswerCompile={toggleThirdAnswerCompile}
               zoomLevel={zoomLevel}
             />
           </div>

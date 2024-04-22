@@ -28,8 +28,7 @@ export type toggleVisibilityArgType = {
 
 export type ThirdQuestionPropsType = {
   currentQuestionId: number
-  answer: string
-  toggleThirdAnswerCompile: (answer: string, currenQuestionId: number) => string
+  isAnswerLoading: boolean
   sankeyChart: string
   zoomLevel: number
   setZoomLevel: React.Dispatch<React.SetStateAction<number>>

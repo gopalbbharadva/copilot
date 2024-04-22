@@ -23,9 +23,8 @@ export const ThirdQuestion = ({
   handleZoomOut,
   sankeyChart,
   setZoomLevel,
-  toggleThirdAnswerCompile,
   zoomLevel,
-  answer,
+  isAnswerLoading,
 }: ThirdQuestionPropsType) => {
   return (
     <div className='w-full'>
@@ -36,25 +35,24 @@ export const ThirdQuestion = ({
           text={<p>{THIRD_QUESTION}</p>}
         />
       )}
-      {!toggleThirdAnswerCompile(answer, currentQuestionId) && (
-        <Question
-          className={`
-                ${!toggleThirdAnswerCompile(answer, currentQuestionId)} 
-                transition delay-500 duration-700`}
-          avatarUrl={Astuto}
-          containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2'
-          text={<p>{COMPILE_LOAD}</p>}
-        />
+      {isAnswerLoading && (
+        <MotionWrapper>
+          <Question
+            avatarUrl={Astuto}
+            containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2'
+            text={<p>{COMPILE_LOAD}</p>}
+          />
+        </MotionWrapper>
       )}
-      {toggleThirdAnswerCompile(answer, currentQuestionId) && (
-        <Question
-          className={`
-                ${toggleThirdAnswerCompile(answer, currentQuestionId)} 
-                transition delay-500 duration-700`}
-          avatarUrl={Astuto}
-          containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2'
-          text={<p>{THIRD_QUESTION_DESCRIPTION}</p>}
-        />
+      {!isAnswerLoading && currentQuestionId === 3 && (
+        <MotionWrapper>
+          <Question
+            avatarUrl={Astuto}
+            containerStyle={`flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2 
+             ${isAnswerLoading ? 'pb-32' : 'pb-0'}`}
+            text={<p>{THIRD_QUESTION_DESCRIPTION}</p>}
+          />
+        </MotionWrapper>
       )}
       {sankeyChart && (
         <MotionWrapper className='relative w-full'>
