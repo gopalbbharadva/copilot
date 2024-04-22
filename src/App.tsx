@@ -5,7 +5,7 @@ import { LuSendHorizonal } from 'react-icons/lu'
 import { QuestionWithAvatar } from './components/QuestionWithAvatar'
 import Astuto from '../public/Astuto.png'
 import Avatar from '../public/Avatar.jpg'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSqlQuery } from './hooks/useSqlQuery'
 import { Chart } from 'react-google-charts'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -39,7 +39,6 @@ function App() {
   const [currentQuestionId, setShowCurrentQuestionId] = useState<number>(0)
   const [showQuery, setShowQuery] = useState(true)
   const [zoomLevel, setZoomLevel] = useState(1.2)
-  const itemRef = useRef<HTMLDivElement>(null)
   const { isLoading, fetchData, data, chart, nextQuestion } = useSqlQuery()
   const { briefData, description, fetchSecondQuestionData, thirdQuestion } =
     useSecondQuestion()
@@ -264,7 +263,20 @@ function App() {
 
             {/* NEXT QUESTIONS STARTS*/}
             {nextQuestion.length !== 0 && currentQuestionId === 1 && (
-              <div className='grid grid-cols-2 gap-4 px-12 self-end w-full bg-white p-6 rounded-lg'>
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+                className='grid grid-cols-2 gap-4 px-12 self-end w-full bg-white p-6 rounded-lg'
+              >
                 {questions.map(({ id, isCurrent, question }) => (
                   <Question
                     disabled={!isCurrent}
@@ -275,19 +287,32 @@ function App() {
                     text={question}
                   />
                 ))}
-              </div>
+              </motion.div>
             )}
             {/* NEXT QUESTIONS ENDS */}
 
             {/* feedback  */}
             {currentQuestionId === 1 && nextQuestion.length !== 0 && (
-              <div className='m-auto flex justify-center items-center gap-4 '>
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+                className='m-auto flex justify-center items-center gap-4 '
+              >
                 <p className='text-gray-500 font-ight'>
                   Have the answers been satisfactory so far?
                 </p>
                 <SlLike className='hover:text-green-500 cursor-pointer' />
                 <SlDislike className='hover:text-red-500 cursor-pointer' />
-              </div>
+              </motion.div>
             )}
             {/* 11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 */}
             {/* 22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222 */}
@@ -357,13 +382,20 @@ function App() {
             )}
 
             {/* THIRD QUESTION */}
-            {thirdQuestion.length !== 0 && currentQuestionId > 1 && (
-              <div
-                className={`grid grid-cols-2 gap-4 px-12 self-end w-full transition delay-500 duration-700 bg-white p-6 rounded-lg ${
-                  thirdQuestion.length !== 0 && currentQuestionId > 1
-                    ? 'opacity-100'
-                    : 'opacity-0'
-                }`}
+            {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+                className={`grid grid-cols-2 gap-4 px-12 self-end w-full transition delay-500 duration-700 bg-white p-6 rounded-lg`}
               >
                 {questions.map(({ id, isCurrent, question }) => (
                   <Question
@@ -375,27 +407,34 @@ function App() {
                     text={question}
                   />
                 ))}
-              </div>
+              </motion.div>
             )}
             {/* feedback  */}
-            {thirdQuestion.length !== 0 && currentQuestionId > 1 && (
-              <div
-                className={`m-auto flex justify-center items-center gap-4 transition delay-500 duration-700 ${
-                  thirdQuestion.length !== 0 && currentQuestionId > 1
-                    ? 'opacity-100'
-                    : 'opacity-0'
-                }`}
+            {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+                className={`m-auto flex justify-center items-center gap-4 transition delay-500 duration-700`}
               >
-                <p className='text-gray-500 font-ight'>
+                <p className='text-gray-500 font-light'>
                   Have the answers been satisfactory so far?
                 </p>
                 <SlLike className='hover:text-red-500 cursor-pointer' />
                 <SlDislike className='hover:text-red-50- cursor-pointer' />
-              </div>
+              </motion.div>
             )}
             {/* THIRD Question */}
 
-            {/* {currentQuestionId === 3 && (
+            {currentQuestionId === 3 && (
               <QuestionWithAvatar
                 avatarUrl={Avatar}
                 containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
@@ -415,71 +454,88 @@ function App() {
                 containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
                 text={<p>Compiling data...</p>}
               />
-            )} */}
+            )}
             {/* {chart.length === 0 ? 'opacity-0' : 'opacity-100'} */}
-            {/* <QuestionWithAvatar
-              className={`${
-                answer && currentQuestionId === 3 ? 'opacity-100' : 'opacity-0'
-              }
+            {answer && currentQuestionId === 3 && (
+              <QuestionWithAvatar
+                className={`${
+                  answer && currentQuestionId === 3
+                    ? 'opacity-100'
+                    : 'opacity-0'
+                }
                 transition delay-500 duration-700`}
-              avatarUrl={Astuto}
-              containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
-              text={
-                <p>
-                  You production account (#24542) has accumulated costs of
-                  $100,000 over the past month, here is spread of cloud costs of
-                  services;
-                </p>
-              }
-            /> */}
-            {/* <div className='relative w-full'>
-              <div
-                className={`transition delay-500 duration-700 ${
-                  sankeyChart.length !== 0 ? 'opacity-100' : 'opacity-0'
-                } 
-              } h-full w-full overflow-auto border-2 border-gray-400 rounded-xl scrollbar-hidden`}
+                avatarUrl={Astuto}
+                containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+                text={
+                  <p>
+                    You production account (#24542) has accumulated costs of
+                    $100,000 over the past month, here is spread of cloud costs
+                    of services;
+                  </p>
+                }
+              />
+            )}
+            {sankeyChart && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+                className='relative w-full'
               >
                 <div
-                  style={{
-                    transform: `scale(${zoomLevel})`,
-                    transformOrigin: 'top left',
-                  }}
+                  className={`transition delay-500 duration-700  
+                  h-full w-full overflow-auto border-2 border-gray-400 rounded-xl scrollbar-hidden`}
                 >
-                  <Chart
-                    chartType='Sankey'
-                    width='100%'
-                    height='500px'
-                    data={costExpenseData}
-                    options={costExpenseChartOptions}
-                  />
+                  <div
+                    style={{
+                      transform: `scale(${zoomLevel})`,
+                      transformOrigin: 'top left',
+                    }}
+                  >
+                    <Chart
+                      chartType='Sankey'
+                      width='100%'
+                      height='500px'
+                      data={costExpenseData}
+                      options={costExpenseChartOptions}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className='absolute bottom-5 right-10'>
-                <button
-                  disabled={zoomLevel === 1.728}
-                  className='text-3xl border border-gray-300 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
-                  onClick={handleZoomIn}
-                >
-                  <BsPlusLg />
-                </button>
-                <button
-                  disabled={zoomLevel === 0.833}
-                  className='text-3xl border border-gray-300 ml-2 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
-                  onClick={handleZoomOut}
-                >
-                  <PiMinus />
-                </button>
-              </div>
-            </div> */}
-            {/* {feedback.length !== 0 && (
+                <div className='absolute bottom-5 right-10'>
+                  <button
+                    disabled={zoomLevel === 1.728}
+                    className='text-3xl border border-gray-300 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
+                    onClick={handleZoomIn}
+                  >
+                    <BsPlusLg />
+                  </button>
+                  <button
+                    disabled={zoomLevel === 0.833}
+                    className='text-3xl border border-gray-300 ml-2 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
+                    onClick={handleZoomOut}
+                  >
+                    <PiMinus />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+            {feedback.length !== 0 && (
               <div className='m-auto flex justify-center items-center gap-4 '>
-                <p className='text-gray-500 font-ight'>
+                <p className='text-gray-500 font-light'>
                   Have the answers been satisfactory so far?
                 </p>
                 <SlLike className='hover:text-red-500 cursor-pointer' />
                 <SlDislike className='hover:text-red-50- cursor-pointer' />
               </div>
-            )} */}
+            )}
           </div>
         )}
         <div
