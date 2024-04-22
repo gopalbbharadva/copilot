@@ -1,5 +1,6 @@
 export const ANSWERS = [
   {
+    id: '1',
     firsLine: (
       <p className='text-sm font-bold text-start'>
         Bucket xyz-logs-1 (production account #12345)
@@ -15,6 +16,7 @@ export const ANSWERS = [
     ),
   },
   {
+    id: '2',
     firsLine: (
       <p className='text-sm font-bold text-start'>
         Bucket abc-user-1 (production account #12345)
