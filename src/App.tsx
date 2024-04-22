@@ -5,7 +5,7 @@ import { LuSendHorizonal } from 'react-icons/lu'
 import { QuestionWithAvatar } from './components/QuestionWithAvatar'
 import Astuto from '../public/Astuto.png'
 import Avatar from '../public/Avatar.jpg'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSqlQuery } from './hooks/useSqlQuery'
 import { Chart } from 'react-google-charts'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -19,20 +19,13 @@ import {
   Answers,
   costExpenseChartOptions,
   costExpenseData,
+  options,
   questionsList,
   tasks,
 } from './constants'
 import { Answer } from './components/static/Answer'
 import { useSecondQuestion } from './hooks/useSecondQuestion'
 import { useThirdQuestion } from './hooks/useThirdQuestion'
-
-const options = {
-  pieHole: 0.8,
-  is3D: false,
-  pieSliceTextStyle: {
-    color: 'black',
-  },
-}
 
 function App() {
   const [questions, setQuestions] = useState(questionsList)
@@ -112,14 +105,32 @@ function App() {
       prevZoomLevel > 0.833 ? +(prevZoomLevel / 1.2).toFixed(3) : prevZoomLevel
     )
   }
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }
+  }, [
+    chart,
+    description,
+    data,
+    sankeyChart,
+    feedback,
+    briefData,
+    nextQuestion,
+    answer,
+    thirdQuestion,
+  ])
   console.log(currentQuestionId, 'id')
 
   return (
     <>
-      <div className='border h-screen border-black flex overflow-y-auto justify-center items-start bg-slate-100 pb-32'>
+      <div
+        className={`border h-screen border-black flex overflow-y-auto justify-start items-center bg-slate-100 flex-col`}
+      >
         {/* <div className='w-full self-end'> */}
         {currentQuestionId === 0 && (
-          <div className='grid grid-cols-2 gap-4 mb-24 px-12 self-end w-full'>
+          <div className='grid grid-cols-2 gap-4 mb-24 px-12 mt-auto pb-6 w-full'>
             {questions.map(({ id, isCurrent, question }) => (
               <Question
                 disabled={!isCurrent}
@@ -199,7 +210,6 @@ function App() {
                     </button>
                   </div>
 
-                  {/* transition delay-1000 duration-1000  ${showQuery && chart ? 'opacity-100' : 'opacity-0'} */}
                   {showQuery && (
                     <div
                       className={`w-full flex justify-start items-start bg-gray-700 text-white rounded-lg p-4 
@@ -222,43 +232,80 @@ function App() {
             </AnimatePresence>
             {/* )} */}
             {/* PIE CHART STARTS */}
-            {!chart && (
-              <QuestionWithAvatar
-                className={`
-                ${!chart && data ? 'opacity-100' : 'opacity-0'} 
-                transition delay-500 duration-700`}
-                avatarUrl={Astuto}
-                containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
-                text={<p>Compiling data...</p>}
-              />
+            {!chart && data && (
+              <motion.div
+                className='w-full'
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+              >
+                <QuestionWithAvatar
+                  avatarUrl={Astuto}
+                  containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+                  text={<p>Compiling data...</p>}
+                />
+              </motion.div>
             )}
-            <QuestionWithAvatar
-              className={`
-                ${chart.length === 0 ? 'opacity-0' : 'opacity-100'} 
-                transition delay-500 duration-700`}
-              avatarUrl={Astuto}
-              containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
-              text={
-                <p>
-                  You production account (#24542) has accumulated costs of
-                  $100,000 over the past month, here is spread of cloud costs of
-                  services;
-                </p>
-              }
-            />
-            <div
-              className={` w-full
-                ${chart.length !== 0 ? 'opacity-100' : 'opacity-0'} 
-                transition delay-500 duration-700`}
-            >
-              <Chart
-                chartType='PieChart'
-                width='100%'
-                height='400px'
-                data={tasks}
-                options={options}
-              />
-            </div>
+            {chart && (
+              <motion.div
+                className='w-full'
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+              >
+                <QuestionWithAvatar
+                  avatarUrl={Astuto}
+                  containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+                  text={
+                    <p>
+                      You production account (#24542) has accumulated costs of
+                      $100,000 over the past month, here is spread of cloud
+                      costs of services;
+                    </p>
+                  }
+                />
+              </motion.div>
+            )}
+            {chart.length !== 0 && (
+              <motion.div
+                className='w-full'
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+              >
+                <Chart
+                  chartType='PieChart'
+                  width='100%'
+                  height='400px'
+                  data={tasks}
+                  options={options}
+                />
+              </motion.div>
+            )}
             {/* PIE CHART ENDS */}
 
             {/* NEXT QUESTIONS STARTS*/}
@@ -314,6 +361,9 @@ function App() {
                 <SlDislike className='hover:text-red-500 cursor-pointer' />
               </motion.div>
             )}
+            {nextQuestion.length !== 0 && currentQuestionId === 1 && (
+              <div className='h-28'></div>
+            )}
             {/* 11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 */}
             {/* 22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222 */}
 
@@ -339,38 +389,53 @@ function App() {
                 text={<p>Retrieving Data...</p>}
               />
             )}
-            {currentQuestionId > 1 && (
-              <QuestionWithAvatar
-                className={`
-                ${
-                  briefData && currentQuestionId > 1
-                    ? 'opacity-100'
-                    : 'opacity-0'
-                } 
-                transition delay-500 duration-700`}
-                avatarUrl={Astuto}
-                containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm'
-                text={
-                  <div className='flex flex-col justify-start items-start gap-2'>
-                    <p>
-                      You can save $2500 per month overall in EC2 costs.{' '}
-                      <a className='text-green-500 underline' href='/'>
-                        Click here
-                      </a>{' '}
-                      to access a detailed report.
-                    </p>
-                    <p>Here are your top 2 savings area:</p>
-                  </div>
-                }
-              />
+            {briefData && currentQuestionId > 1 && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+                className='w-full'
+              >
+                <QuestionWithAvatar
+                  avatarUrl={Astuto}
+                  containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm'
+                  text={
+                    <div className='flex flex-col justify-start items-start gap-2'>
+                      <p>
+                        You can save $2500 per month overall in EC2 costs.{' '}
+                        <a className='text-green-500 underline' href='/'>
+                          Click here
+                        </a>{' '}
+                        to access a detailed report.
+                      </p>
+                      <p>Here are your top 2 savings area:</p>
+                    </div>
+                  }
+                />
+              </motion.div>
             )}
-            {currentQuestionId > 1 && (
-              <div
-                className={`flex justify-center items-center flex-col gap-4 transition delay-500 duration-700 ${
-                  description && currentQuestionId > 1
-                    ? 'opacity-100'
-                    : 'opacity-0'
-                } `}
+            {description && currentQuestionId > 1 && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 1,
+                }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: 'easeIn',
+                  stiffness: 400,
+                  damping: 40,
+                  delay: 0.5,
+                }}
+                className={`flex justify-center items-center flex-col gap-4 transition delay-500 duration-700 `}
               >
                 {Answers.map((answer) => (
                   <Answer
@@ -378,7 +443,7 @@ function App() {
                     secondLine={answer.secondLine}
                   />
                 ))}
-              </div>
+              </motion.div>
             )}
 
             {/* THIRD QUESTION */}
@@ -431,6 +496,9 @@ function App() {
                 <SlLike className='hover:text-red-500 cursor-pointer' />
                 <SlDislike className='hover:text-red-50- cursor-pointer' />
               </motion.div>
+            )}
+            {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
+              <div className='h-28'></div>
             )}
             {/* THIRD Question */}
 
@@ -536,6 +604,7 @@ function App() {
                 <SlDislike className='hover:text-red-50- cursor-pointer' />
               </div>
             )}
+            {feedback.length !== 0 && <div className='h-28'></div>}
           </div>
         )}
         <div
@@ -548,6 +617,7 @@ function App() {
             <LuSendHorizonal className='text-gray-400' />
           </div>
         </div>
+        <div ref={ref}></div>
       </div>
     </>
   )
