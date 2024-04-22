@@ -1,4 +1,4 @@
-export const Answers = [
+export const ANSWERS = [
   {
     firsLine: (
       <p className='text-sm font-bold text-start'>
@@ -30,7 +30,7 @@ export const Answers = [
   },
 ]
 
-export const questionsList = [
+export const QUESTIONS_LIST = [
   {
     id: 1,
     question: 'Top cloud costs by services in production account (#24542)',
@@ -54,7 +54,7 @@ export const questionsList = [
   },
 ]
 
-export const options = {
+export const OPTIONS = {
   pieHole: 0.8,
   is3D: false,
   pieSliceTextStyle: {
@@ -62,8 +62,8 @@ export const options = {
   },
 }
 
-export const tasks = [
-  ['Task', 'Hours per Day'],
+export const DATA_STORES = [
+  ['DB', 'amount'],
   ['Others ($10,000)', 1],
   ['Elasticache ($10,000)', 1],
   ['Opensearch ($10,000)', 1],
@@ -72,14 +72,14 @@ export const tasks = [
   ['EC2 ($30,000)', 3],
 ]
 
-export const costExpenseData = [
+export const COST_EXPENSE_DATA = [
   ['From', 'To', 'Weight'],
   ['Excess Costs: 2,500', 'Production: 2,000', 22],
   ['Excess Costs: 2,500', 'Staging: 300', 4],
   ['Excess Costs: 2,500', 'Analytics: 200', 2],
 
   ['Staging: 300', '', 4],
-  ['Analytics: 200', '',2],
+  ['Analytics: 200', '', 2],
 
   ['Production: 2,000', 'Purpose: 800', 9],
   ['Production: 2,000', 'Customers: 600', 8],
@@ -97,7 +97,7 @@ export const costExpenseData = [
   ['Product: 600', 'Chat: 120', 2],
 ]
 
-export const costExpenseChartOptions = {
+export const COSTS_EXPENSE_CHART_OPTIONS = {
   width: 900,
   sankey: {
     node: { nodePadding: 20 },
