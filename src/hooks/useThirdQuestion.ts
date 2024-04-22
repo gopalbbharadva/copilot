@@ -6,16 +6,14 @@ export const useThirdQuestion = () => {
   const [feedback, setFeedback] = useState('')
 
   const fetchThirdQuestionData = () => {
-    // setIsLoading(true)
-    console.log('called')
     try {
       const res = new Promise<string>((res) =>
-        setTimeout(() => res('brief data'), 2000)
+        setTimeout(() => res('description'), 2000)
       )
       res
         .then((result) => {
           setAnswer(result)
-          return 'green signal for description'
+          return 'sankey chart'
         })
         .then((answers) => {
           const timer = setTimeout(() => {
@@ -25,13 +23,11 @@ export const useThirdQuestion = () => {
         })
         .then((nextQuestion) =>
           setTimeout(() => {
-            setFeedback(nextQuestion ? 'green' : '')
+            setFeedback(nextQuestion ? 'show suggestion' : '')
           }, 3000)
         )
-      //   setIsLoading(false)
     } catch (error) {
       console.log('err')
-      //   setIsLoading(false)
     }
   }
   return { answer, fetchThirdQuestionData, sankeyChart, feedback }
