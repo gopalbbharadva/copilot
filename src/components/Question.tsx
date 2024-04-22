@@ -2,18 +2,25 @@ type QuestionPropsType = {
   text: string
   clickHandler: () => void
   className?: string
+  disabled: boolean
 }
 
 export const Question = ({
   text,
   clickHandler,
   className,
+  disabled,
 }: QuestionPropsType) => {
   const finalClassName = `font-normal text-start px-4 hover:cursor-pointer hover:bg-slate-200 
-    py-2 border border-gray-500 rounded-xl text-sm ${className}`
+  disabled:opacity-40 disabled:cursor-not-allowed
+    py-4 border border-gray-500 rounded-xl text-sm ${className}`
   return (
-    <p onClick={clickHandler} className={finalClassName}>
+    <button
+      disabled={disabled}
+      onClick={clickHandler}
+      className={finalClassName}
+    >
       {text}
-    </p>
+    </button>
   )
 }

@@ -18,12 +18,14 @@ import {
   Answers,
   costExpenseChartOptions,
   costExpenseData,
-  questions,
+  questionsList,
   tasks,
 } from './constants'
 import { Answer } from './components/static/Answer'
+import { useSecondQuestion } from './hooks/useSecondQuestion'
+import { useThirdQuestion } from './hooks/useThirdQuestion'
 
-export const options = {
+const options = {
   pieHole: 0.8,
   is3D: false,
   pieSliceTextStyle: {
@@ -32,15 +34,39 @@ export const options = {
 }
 
 function App() {
-  const [showFirstQuestion, setShowFirstQuestion] = useState(true)
+  // const [isFirstQuestionStarted, setIsFirstQuestionStarted] = useState(false)
+  const [questions, setQuestions] = useState(questionsList)
+  const [currentQuestionId, setShowCurrentQuestionId] = useState<number>(0)
   const [showQuery, setShowQuery] = useState(true)
   const [zoomLevel, setZoomLevel] = useState(1.2)
-  const { fetchData, data, chart } = useSqlQuery()
+  const { fetchData, data, chart, nextQuestion } = useSqlQuery()
+  const { briefData, description, fetchSecondQuestionData, thirdQuestion } =
+    useSecondQuestion()
 
-  const toggleVisibility = () => {
-    setShowFirstQuestion((prev) => !prev)
-    fetchData()
+  const { answer, feedback, fetchThirdQuestionData, sankeyChart } =
+    useThirdQuestion()
+  console.log(briefData, 'briefData')
+
+  const toggleVisibility = (id: number) => {
+    setShowCurrentQuestionId(id)
+    switch (id) {
+      case 1:
+        fetchData()
+        break
+      case 2:
+        fetchSecondQuestionData()
+        break
+      case 3:
+        fetchThirdQuestionData()
+        break
+      default:
+        break
+    }
+    // if (id === 1) fetchData()
   }
+
+  console.log(answer, 'answer')
+  // console.log(currentQuestionId, 'questionId')
 
   const toggleShowQuery = () => {
     setShowQuery((prev) => !prev)
@@ -48,7 +74,33 @@ function App() {
 
   useEffect(() => {
     toggleShowQuery()
-  }, [chart])
+    if (chart.length !== 0) {
+      setQuestions((prev) =>
+        prev.map((q) =>
+          q.id === 2
+            ? {
+                ...q,
+                isCurrent: true,
+                question: 'How can I reduce my EC2 costs?',
+              }
+            : { ...q, isCurrent: false }
+        )
+      )
+    }
+    if (description.length !== 0) {
+      setQuestions((prev) =>
+        prev.map((q) =>
+          q.id === 3
+            ? {
+                ...q,
+                isCurrent: true,
+                question: 'Why are EC2 costs increasing so much?',
+              }
+            : { ...q, isCurrent: false }
+        )
+      )
+    }
+  }, [chart, description, data])
 
   const handleZoomIn = () => {
     setZoomLevel((prevZoomLevel) =>
@@ -64,21 +116,27 @@ function App() {
 
   return (
     <>
-      <div className='border h-screen border-black flex overflow-y-auto justify-center items-start bg-slate-100'>
+      <div className='border h-screen border-black flex overflow-y-auto justify-center items-start bg-slate-100 pb-32'>
         {/* <div className='w-full self-end'> */}
-        {!showFirstQuestion && (
+        {currentQuestionId === 0 && (
           <div className='grid grid-cols-2 gap-4 mb-24 px-12 self-end w-full'>
-            {questions.map((question) => (
+            {questions.map(({ id, isCurrent, question }) => (
               <Question
-                clickHandler={toggleVisibility}
-                key={question}
+                disabled={!isCurrent}
+                clickHandler={isCurrent ? () => toggleVisibility(id) : () => {}}
+                key={id}
                 text={question}
               />
             ))}
           </div>
         )}
-        {showFirstQuestion && (
-          <div className='w-full px-4 flex justify-start items-start flex-col gap-2 '>
+
+        {currentQuestionId !== 0 && (
+          <div className='w-full px-4 flex justify-start items-start flex-col gap-2'>
+            {/* *********************** 
+            FIRST QUESTION AND ANSWER 
+            *************************
+            */}
             <QuestionWithAvatar
               avatarUrl={Avatar}
               containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
@@ -96,6 +154,7 @@ function App() {
                 text={<p>Generating SQL Query...</p>}
               />
             )}
+            {/* SQL CODE SNIPPET */}
             {data && (
               <div
                 className='w-full flex justify-center items-center flex-col'
@@ -129,6 +188,7 @@ function App() {
                 )}
               </div>
             )}
+            {/* PIE CHART STARTS */}
             {!chart && (
               <QuestionWithAvatar
                 className={`
@@ -153,20 +213,81 @@ function App() {
                 </p>
               }
             />
-            <Chart
-              chartType='PieChart'
-              width='100%'
-              height='400px'
-              data={tasks}
-              options={options}
-            />
+            <div
+              className={` w-full
+                ${chart.length !== 0 ? 'opacity-100' : 'opacity-0'} 
+                transition delay-500 duration-700`}
+            >
+              <Chart
+                chartType='PieChart'
+                width='100%'
+                height='400px'
+                data={tasks}
+                options={options}
+              />
+            </div>
+            {/* PIE CHART ENDS */}
+
+            {/* NEXT QUESTIONS ENDS*/}
+            {nextQuestion.length !== 0 && currentQuestionId === 1 && (
+              <div className='grid grid-cols-2 gap-4 px-12 self-end w-full bg-white p-6 rounded-lg'>
+                {questions.map(({ id, isCurrent, question }) => (
+                  <Question
+                    disabled={!isCurrent}
+                    clickHandler={
+                      isCurrent ? () => toggleVisibility(id) : () => {}
+                    }
+                    key={id}
+                    text={question}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* NEXT QUESTIONS ENDS */}
+            {/* feedback  */}
+            {currentQuestionId === 1 && nextQuestion.length !== 0 && (
+              <div className='m-auto flex justify-center items-center gap-4 '>
+                <p className='text-gray-500 font-ight'>
+                  Have the answers been satisfactory so far?
+                </p>
+                <SlLike className='hover:text-green-500 cursor-pointer' />
+                <SlDislike className='hover:text-red-500 cursor-pointer' />
+              </div>
+            )}
+            {/* 11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111 */}
+            {/* 22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222 */}
+
             {/* SECOND Question */}
+            {currentQuestionId === 2 && (
+              <QuestionWithAvatar
+                avatarUrl={Avatar}
+                containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
+                text={<p>How can I reduce my EC2 costs?</p>}
+              />
+            )}
+            {!briefData && currentQuestionId === 2 && (
+              <QuestionWithAvatar
+                className={`
+                ${
+                  !briefData && currentQuestionId === 2
+                    ? 'opacity-100'
+                    : 'opacity-0'
+                } 
+                transition delay-500 duration-700`}
+                avatarUrl={Astuto}
+                containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+                text={<p>Retrieving Data...</p>}
+              />
+            )}
             <QuestionWithAvatar
-              avatarUrl={Avatar}
-              containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
-              text={<p>How can I reduce my EC2 costs?</p>}
-            />
-            <QuestionWithAvatar
+              className={`
+                ${
+                  briefData && currentQuestionId === 2
+                    ? 'opacity-100'
+                    : 'opacity-0'
+                } 
+                transition delay-500 duration-700`}
               avatarUrl={Astuto}
               containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm'
               text={
@@ -182,7 +303,13 @@ function App() {
                 </div>
               }
             />
-            <div className='flex justify-center items-center flex-col gap-4'>
+            <div
+              className={`flex justify-center items-center flex-col gap-4 transition delay-500 duration-700  ${
+                description && currentQuestionId === 2
+                  ? 'opacity-100'
+                  : 'opacity-0'
+              } `}
+            >
               {Answers.map((answer) => (
                 <Answer
                   firstLine={answer.firsLine}
@@ -190,23 +317,63 @@ function App() {
                 />
               ))}
             </div>
+            <div
+              className={`grid grid-cols-2 gap-4 px-12 self-end w-full transition delay-500 duration-700 bg-white p-6 rounded-lg ${
+                thirdQuestion.length !== 0 ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              {questions.map(({ id, isCurrent, question }) => (
+                <Question
+                  disabled={!isCurrent}
+                  clickHandler={
+                    isCurrent ? () => toggleVisibility(id) : () => {}
+                  }
+                  key={id}
+                  text={question}
+                />
+              ))}
+            </div>
             {/* feedback  */}
-            <div className='m-auto flex justify-center items-center gap-4 '>
+            <div
+              className={`m-auto flex justify-center items-center gap-4 transition delay-500 duration-700 ${
+                thirdQuestion.length !== 0 ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
               <p className='text-gray-500 font-ight'>
                 Have the answers been satisfactory so far?
               </p>
               <SlLike className='hover:text-red-500 cursor-pointer' />
               <SlDislike className='hover:text-red-50- cursor-pointer' />
             </div>
+
             {/* THIRD Question */}
-            <QuestionWithAvatar
-              avatarUrl={Avatar}
-              containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
-              text={<p>Why are EC2 costs increasing so much?</p>}
-            />
+
+            {currentQuestionId === 3 && (
+              <QuestionWithAvatar
+                avatarUrl={Avatar}
+                containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
+                text={<p>Why are EC2 costs increasing so much?</p>}
+              />
+            )}
+            {!answer && currentQuestionId === 3 && (
+              <QuestionWithAvatar
+                className={`
+                    ${
+                      !answer && currentQuestionId === 3
+                        ? 'opacity-100'
+                        : 'opacity-0'
+                    } 
+                transition delay-500 duration-700`}
+                avatarUrl={Astuto}
+                containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+                text={<p>Compiling data...</p>}
+              />
+            )}
             {/* {chart.length === 0 ? 'opacity-0' : 'opacity-100'} */}
             <QuestionWithAvatar
-              className={`
+              className={`${
+                answer && currentQuestionId === 3 ? 'opacity-100' : 'opacity-0'
+              }
                 transition delay-500 duration-700`}
               avatarUrl={Astuto}
               containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
@@ -218,22 +385,29 @@ function App() {
                 </p>
               }
             />
-            <div className='h-full w-full overflow-auto relative border border-gray-400 rounded-xl scrollbar-hidden'>
+            <div className='relative w-full'>
               <div
-                style={{
-                  transform: `scale(${zoomLevel})`,
-                  transformOrigin: 'top left',
-                }}
+                className={`transition delay-500 duration-700 ${
+                  sankeyChart.length !== 0 ? 'opacity-100' : 'opacity-0'
+                } 
+              } h-full w-full overflow-auto border-2 border-gray-400 rounded-xl scrollbar-hidden`}
               >
-                <Chart
-                  chartType='Sankey'
-                  width='100%'
-                  height='500px'
-                  data={costExpenseData}
-                  options={costExpenseChartOptions}
-                />
+                <div
+                  style={{
+                    transform: `scale(${zoomLevel})`,
+                    transformOrigin: 'top left',
+                  }}
+                >
+                  <Chart
+                    chartType='Sankey'
+                    width='100%'
+                    height='500px'
+                    data={costExpenseData}
+                    options={costExpenseChartOptions}
+                  />
+                </div>
               </div>
-              <div className='absolute bottom-0 right-20'>
+              <div className='absolute bottom-5 right-10'>
                 <button
                   disabled={zoomLevel === 1.728}
                   className='text-3xl border border-gray-300 rounded-md bg-white disabled:opacity-30 disabled:cursor-pointer'
@@ -250,10 +424,20 @@ function App() {
                 </button>
               </div>
             </div>
+            {feedback.length !== 0 && (
+              <div className='m-auto flex justify-center items-center gap-4 '>
+                <p className='text-gray-500 font-ight'>
+                  Have the answers been satisfactory so far?
+                </p>
+                <SlLike className='hover:text-red-500 cursor-pointer' />
+                <SlDislike className='hover:text-red-50- cursor-pointer' />
+              </div>
+            )}
           </div>
         )}
+
         <div
-          className='flex absolute bottom-10 justify-between p-3 border shadow-lg
+          className='flex absolute bottom-10 justify-between p-3 border shadow-lg 
           w-[74rem] max-w-full text-gray-400 border-gray-500 rounded-xl text-sm mt-6 bg-white'
         >
           Start typing your query here...
