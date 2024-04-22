@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export const useSqlQuery = () => {
+export const useFirstQuestion = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState('')
   const [chart, setChart] = useState('')
@@ -10,13 +10,12 @@ export const useSqlQuery = () => {
     setIsLoading(true)
     try {
       const res = new Promise<string>((res) =>
-        setTimeout(() => res('done'), 2000)
+        setTimeout(() => res('show sql query'), 2000)
       )
       res
         .then((result) => {
-          console.log(result, 'result')
           setData(result)
-          return 'green signal for chart'
+          return 'chart to show'
         })
         .then((chartData) => {
           const timer = setTimeout(() => {
@@ -26,14 +25,13 @@ export const useSqlQuery = () => {
         })
         .then((nextQuestion) =>
           setTimeout(() => {
-            setNextQuestion(nextQuestion ? 'green' : '')
+            setNextQuestion(nextQuestion ? 'show next question' : '')
           }, 3000)
         )
         .finally(() => {
           setIsLoading(false)
         })
     } catch (error) {
-      console.log('err')
       setIsLoading(false)
     }
   }

@@ -1,21 +1,21 @@
 import { useState } from 'react'
 
 export const useThirdQuestion = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const [answer, setAnswer] = useState('')
   const [sankeyChart, setSankeyChart] = useState('')
   const [feedback, setFeedback] = useState('')
 
   const fetchThirdQuestionData = () => {
-    // setIsLoading(true)
-    console.log('called')
+    setIsLoading(true)
     try {
       const res = new Promise<string>((res) =>
-        setTimeout(() => res('brief data'), 2000)
+        setTimeout(() => res('description'), 2000)
       )
       res
         .then((result) => {
           setAnswer(result)
-          return 'green signal for description'
+          return 'sankey chart'
         })
         .then((answers) => {
           const timer = setTimeout(() => {
@@ -25,14 +25,15 @@ export const useThirdQuestion = () => {
         })
         .then((nextQuestion) =>
           setTimeout(() => {
-            setFeedback(nextQuestion ? 'green' : '')
+            setFeedback(nextQuestion ? 'show suggestion' : '')
           }, 3000)
         )
-      //   setIsLoading(false)
+        .finally(() => {
+          setIsLoading(false)
+        })
     } catch (error) {
       console.log('err')
-      //   setIsLoading(false)
     }
   }
-  return { answer, fetchThirdQuestionData, sankeyChart, feedback }
+  return { isLoading, answer, fetchThirdQuestionData, sankeyChart, feedback }
 }
