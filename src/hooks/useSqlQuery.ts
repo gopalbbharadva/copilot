@@ -14,6 +14,7 @@ export const useSqlQuery = () => {
       )
       res
         .then((result) => {
+          console.log(result, 'result')
           setData(result)
           return 'green signal for chart'
         })
@@ -28,8 +29,9 @@ export const useSqlQuery = () => {
             setNextQuestion(nextQuestion ? 'green' : '')
           }, 3000)
         )
-
-      setIsLoading(false)
+        .finally(() => {
+          setIsLoading(false)
+        })
     } catch (error) {
       console.log('err')
       setIsLoading(false)
