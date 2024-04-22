@@ -1,9 +1,9 @@
 import './App.css'
-import { Question } from './components/Question'
+import { Option } from './components/Option'
 import { HiOutlineCodeBracket } from 'react-icons/hi2'
 import { LuSendHorizonal } from 'react-icons/lu'
 import { useEffect, useRef, useState } from 'react'
-import { useSqlQuery } from './hooks/useSqlQuery'
+import { useFirstQuestion } from './hooks/useFirstQuestion'
 
 import { QUESTIONS_LIST, START_TYPING } from './constants'
 import { useSecondQuestion } from './hooks/useSecondQuestion'
@@ -27,7 +27,7 @@ function App() {
   const [zoomLevel, setZoomLevel] = useState(1.2)
   const [showQuery, setShowQuery] = useState(true)
 
-  const { isLoading, fetchData, data, chart, nextQuestion } = useSqlQuery()
+  const { isLoading, fetchData, data, chart, nextQuestion } = useFirstQuestion()
   const toggleShowQuery = () => {
     setShowQuery((prev) => !prev)
   }
@@ -106,7 +106,7 @@ function App() {
         {currentQuestionId === 0 && (
           <div className='grid grid-cols-2 gap-4 mb-24 px-12 mt-auto pb-6 w-full'>
             {questions.map(({ id, isCurrent, question }) => (
-              <Question
+              <Option
                 disabled={!isCurrent}
                 clickHandler={() => currentButtonHandler(isCurrent, id)}
                 key={id}

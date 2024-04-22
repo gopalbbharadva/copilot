@@ -1,21 +1,17 @@
-import { QuestionPropsType } from '../types'
+import { QuestionWithAvatarPropsType } from '../types'
 
 export const Question = ({
   text,
-  clickHandler,
+  containerStyle,
+  avatarUrl,
   className,
-  disabled,
-}: QuestionPropsType) => {
-  const finalClassName = `font-normal text-start px-4 hover:cursor-pointer hover:bg-slate-200 
-  disabled:opacity-40 disabled:cursor-not-allowed
-    py-4 border border-gray-500 rounded-xl text-sm ${className}`
+}: QuestionWithAvatarPropsType) => {
+  const finalClassName = `w-full flex justify-start items-center gap-4 
+  bg-slate-200 p-4 rounded-br-lg rounded-bl-lg ${containerStyle} ${className}`
   return (
-    <button
-      disabled={disabled}
-      onClick={clickHandler}
-      className={finalClassName}
-    >
+    <div className={finalClassName}>
+      <img src={avatarUrl} className='w-8 h-8 rounded-md' />
       {text}
-    </button>
+    </div>
   )
 }

@@ -1,4 +1,4 @@
-import { QuestionWithAvatar } from './QuestionWithAvatar'
+import { Question } from './Question'
 import {
   COMPILE_LOAD,
   COSTS_EXPENSE_CHART_OPTIONS,
@@ -30,29 +30,29 @@ export const ThirdQuestion = ({
   return (
     <div className='w-full'>
       {currentQuestionId === 3 && (
-        <QuestionWithAvatar
+        <Question
           avatarUrl={Avatar}
           containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
           text={<p>{THIRD_QUESTION}</p>}
         />
       )}
       {!toggleThirdAnswerCompile(answer, currentQuestionId) && (
-        <QuestionWithAvatar
+        <Question
           className={`
                 ${!toggleThirdAnswerCompile(answer, currentQuestionId)} 
                 transition delay-500 duration-700`}
           avatarUrl={Astuto}
-          containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+          containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2'
           text={<p>{COMPILE_LOAD}</p>}
         />
       )}
       {toggleThirdAnswerCompile(answer, currentQuestionId) && (
-        <QuestionWithAvatar
+        <Question
           className={`
                 ${toggleThirdAnswerCompile(answer, currentQuestionId)} 
                 transition delay-500 duration-700`}
           avatarUrl={Astuto}
-          containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+          containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2'
           text={<p>{THIRD_QUESTION_DESCRIPTION}</p>}
         />
       )}
@@ -100,7 +100,7 @@ export const ThirdQuestion = ({
       )}
       {feedback.length !== 0 && (
         <div className='m-auto flex justify-center items-center gap-4 '>
-          <p className='text-gray-500 font-light'>{FEEDBACK_LINE}</p>
+          <p className='text-gray-500 font-light mt-2'>{FEEDBACK_LINE}</p>
           <SlLike className='hover:text-green-500 cursor-pointer' />
           <SlDislike className='hover:text-red-500 cursor-pointer' />
         </div>

@@ -8,10 +8,10 @@ import {
 } from '../constants'
 import {
   MotionWrapper,
-  Question,
+  Option,
   SubHeader,
   Answer,
-  QuestionWithAvatar,
+  Question,
 } from '../components/index'
 
 import Avatar from '../../public/Avatar.jpg'
@@ -30,27 +30,27 @@ export const SecondQuestion = ({
   return (
     <div className='w-full'>
       {currentQuestionId > 1 && (
-        <QuestionWithAvatar
+        <Question
           avatarUrl={Avatar}
           containerStyle='flex justify-start items-center w-full border py-4 border-none rounded-lg text-sm'
           text={<p>{SECOND_QUESTION}</p>}
         />
       )}
       {!briefData && currentQuestionId > 1 && (
-        <QuestionWithAvatar
+        <Question
           className={`
-                ${toggleSecondAnswerRetrieve(briefData, currentQuestionId)} 
-                transition delay-500 duration-700`}
+          ${toggleSecondAnswerRetrieve(briefData, currentQuestionId)} 
+          transition delay-500 duration-700`}
           avatarUrl={Astuto}
-          containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+          containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm my-2'
           text={<p>{RETRIEVING}</p>}
         />
       )}
       {briefData && currentQuestionId > 1 && (
         <MotionWrapper className='w-full'>
-          <QuestionWithAvatar
+          <Question
             avatarUrl={Astuto}
-            containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm'
+            containerStyle='flex justify-start items-center w-full border bg-white py-4 border-none rounded-lg text-sm my-2'
             text={
               <div className='flex flex-col justify-start items-start gap-2'>
                 {SECOND_QUESTION_DESCRIPTION}
@@ -61,7 +61,10 @@ export const SecondQuestion = ({
       )}
 
       {description && currentQuestionId > 1 && (
-        <MotionWrapper className='flex justify-center items-center flex-col gap-4 transition delay-500 duration-700 bg-white p-2 rounded-md'>
+        <MotionWrapper
+          className='flex justify-center items-center flex-col gap-4 
+         bg-white p-2 rounded-md rounded-br-none rounded-bl-none'
+        >
           <SubHeader text='Top two saving areas' />
           {ANSWERS.map((answer) => (
             <Answer
@@ -75,14 +78,20 @@ export const SecondQuestion = ({
       {/* THIRD QUESTION */}
 
       {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
-        <MotionWrapper className='flex justify-center items-center w-full p-2 bg-white rounded-lg'>
+        <MotionWrapper
+          className='flex justify-center items-center w-full p-2 bg-white 
+            rounded-lg rounded-br-none rounded-bl-none'
+        >
           <SubHeader text='You might also want to know' />
         </MotionWrapper>
       )}
       {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
-        <MotionWrapper className='grid grid-cols-2 gap-4 px-12 self-end w-full transition delay-500 duration-700 bg-white p-6 rounded-lg'>
+        <MotionWrapper
+          className='grid grid-cols-2 gap-4 px-12 self-end w-full
+         bg-white p-6 rounded-lg rounded-tr-none rounded-tl-none'
+        >
           {questions.map(({ id, isCurrent, question }) => (
-            <Question
+            <Option
               disabled={!isCurrent}
               clickHandler={() => currentButtonHandler(isCurrent, id)}
               key={id}
@@ -93,7 +102,7 @@ export const SecondQuestion = ({
       )}
       {/* feedback  */}
       {thirdQuestion.length !== 0 && currentQuestionId === 2 && (
-        <MotionWrapper className='m-auto flex justify-center items-center gap-4 transition delay-500 duration-700'>
+        <MotionWrapper className='m-auto flex justify-center items-center gap-4 transition delay-500 duration-700 mt-2'>
           <p className='text-gray-500 font-light'>{FEEDBACK_LINE}</p>
           <SlLike className='hover:text-green-500 cursor-pointer' />
           <SlDislike className='hover:text-red-500 cursor-pointer' />
