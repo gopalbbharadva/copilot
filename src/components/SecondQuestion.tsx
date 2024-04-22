@@ -63,7 +63,7 @@ export const SecondQuestion = ({
       {description && currentQuestionId > 1 && (
         <MotionWrapper
           className='flex justify-center items-center flex-col gap-4 
-         bg-white p-2 rounded-md rounded-br-none rounded-bl-none'
+         bg-white p-2 rounded-md'
         >
           <SubHeader text='Top two saving areas' />
           {ANSWERS.map((answer) => (

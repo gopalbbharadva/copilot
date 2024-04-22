@@ -79,7 +79,7 @@ export const FirstQuestion = ({
         <MotionWrapper className='w-full'>
           <Question
             avatarUrl={Astuto}
-            containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm'
+            containerStyle='flex justify-start items-center w-full border py-4 bg-white border-none rounded-lg text-sm mt-2'
             text={<p>{COMPILE_LOAD}</p>}
           />
         </MotionWrapper>
@@ -112,7 +112,7 @@ export const FirstQuestion = ({
       {nextQuestion.length !== 0 && currentQuestionId === 1 && (
         <MotionWrapper
           className='flex justify-center items-center w-full p-2 bg-white 
-        rounded-lg rounded-br-none rounded-bl-none'
+        '
         >
           <SubHeader text='You might also want to know' />
         </MotionWrapper>
@@ -120,7 +120,7 @@ export const FirstQuestion = ({
       {nextQuestion.length !== 0 && currentQuestionId === 1 && (
         <MotionWrapper
           className='grid grid-cols-2 gap-4 px-12 self-end w-full bg-white p-6 
-        rounded-lg rounded-br-none rounded-bl-none'
+        rounded-lg rounded-tr-none rounded-tl-none'
         >
           {questions.map(({ id, isCurrent, question }) => (
             <Option
