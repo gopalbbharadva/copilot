@@ -1,18 +1,11 @@
-import { ReactElement } from 'react'
-
-type QuestionPropsType = {
-  text: ReactElement
-  containerStyle?: string
-  avatarUrl?: string
-  className?: string
-}
+import { QuestionWithAvatarPropsType } from '../types'
 
 export const QuestionWithAvatar = ({
   text,
   containerStyle,
   avatarUrl,
   className,
-}: QuestionPropsType) => {
+}: QuestionWithAvatarPropsType) => {
   const finalClassName = `w-full flex justify-start items-center gap-4 
   bg-slate-200 p-4 rounded-br-lg rounded-bl-lg ${containerStyle} ${className}`
   return (

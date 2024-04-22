@@ -1,9 +1,4 @@
-type QuestionPropsType = {
-  text: string
-  clickHandler: () => void
-  className?: string
-  disabled: boolean
-}
+import { QuestionPropsType } from '../types'
 
 export const Question = ({
   text,
